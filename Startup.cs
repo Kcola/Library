@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HotChocolate;
 using HotChocolate.AspNetCore;
+using Library.Server.Graphql;
 using Library.Server.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,8 +32,9 @@ namespace Library.Server
             services.AddControllers();
             services.AddGraphQL(
                 SchemaBuilder.New()
-                .AddQueryType<Reader>()
+                .AddQueryType<Query>()
             );
+            services.AddDbContext<libraryContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +43,7 @@ namespace Library.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UsePlayground();
             }
 
             app.UseHttpsRedirection();
@@ -49,9 +52,8 @@ namespace Library.Server
 
             app.UseAuthorization();
 
-            app.UseGraphQL();
+            app.UseGraphQL("/graphql");
 
-            app.UsePlayground();
 
             app.UseEndpoints(endpoints =>
             {
