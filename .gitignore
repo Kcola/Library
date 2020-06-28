@@ -30,3 +30,12 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+/.idea/.idea.Library.Server/.idea/.gitignore
+/.idea/.idea.Library.Server/.idea/.name
+/.idea/.idea.Library.Server/.idea/contentModel.xml
+/.idea/.idea.Library.Server/.idea/encodings.xml
+/.idea/.idea.Library.Server/.idea/indexLayout.xml
+/.idea/.idea.Library.Server/.idea/modules.xml
+/.idea/.idea.Library.Server/.idea/projectSettingsUpdater.xml
+/.idea/.idea.Library.Server/riderModule.iml
+/.idea/.idea.Library.Server/.idea/vcs.xml
