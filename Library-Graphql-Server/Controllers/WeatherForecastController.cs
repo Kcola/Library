@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Library.Server.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -25,6 +26,7 @@ namespace Library.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public List<Borrows> Get()
         {
             var borrowed = new List<Borrows>();

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using Library.Server.Models;
 using System.Linq;
 using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types.Relay;
 using HotChocolate.Types;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library.Server.Graphql
 {
+       [Authorize]
     public class Query
     {
         [UsePaging]
