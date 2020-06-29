@@ -45,6 +45,7 @@ namespace Library.Server
             services.AddGraphQL(
                 SchemaBuilder.New()
                 .AddQueryType<Query>()
+                .AddMutationType<Mutation>()
                 .AddAuthorizeDirectiveType()
             );
             services.AddDbContext<libraryContext>();
