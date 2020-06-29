@@ -5,7 +5,7 @@ namespace Library.Server.Helpers
 {
     public class Repository : IRepository
     {
-        private libraryContext _library;
+        private readonly libraryContext _library;
 
         public Repository(libraryContext library)
         {

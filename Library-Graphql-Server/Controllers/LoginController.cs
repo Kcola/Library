@@ -29,12 +29,13 @@ namespace Library.Server.Controllers
 
         public bool ValidateUser(Login credentials)
         {
-            var user = _repository.GetUser(credentials.username);
+            var user = _repository.GetUser(credentials.Username);
             var hashedPassword = user.Password;
-            return user.Username != null && BCrypt.Net.BCrypt.Verify(credentials.password, hashedPassword);
+            var correctPassword = BCrypt.Net.BCrypt.Verify(credentials.Password, hashedPassword);
+            return user.Username != null && correctPassword;
         }
 
-        public JwtSecurityToken GenerateToken(Reader reader)
+        public string GenerateToken(Reader reader)
         {
             var claims = new[]
             {
@@ -52,7 +53,7 @@ namespace Library.Server.Controllers
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], claims, expires: DateTime.Now.AddHours(1), signingCredentials: signIn);
-            return token;
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
         
         [HttpPost]
@@ -61,11 +62,9 @@ namespace Library.Server.Controllers
             var valid = ValidateUser(credentials);
             if (!valid)
                 return BadRequest("Invalid credentials");
- 
-            var reader = _repository.GetReader(credentials.username);
+            var reader = _repository.GetReader(credentials.Username);
             var token = GenerateToken(reader);
-            return Ok(new {Jwt = new JwtSecurityTokenHandler().WriteToken(token)});
-
+            return Ok(new {Jwt = token});
         }
         
         [Authorize]
@@ -81,7 +80,6 @@ namespace Library.Server.Controllers
                 Lastname = User.Claims.FirstOrDefault(c => c.Type == "LastName")?.Value,
                 Address = User.Claims.FirstOrDefault(c => c.Type == "Address")?.Value,
                 Zipcode = User.Claims.FirstOrDefault(c => c.Type == "Zipcode")?.Value,
-                Rtype = User.Claims.FirstOrDefault(c => c.Type == "Rtype")?.Value,
             };
             return Ok(currentUser);
         }
