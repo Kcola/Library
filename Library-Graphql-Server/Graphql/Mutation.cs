@@ -1,28 +1,36 @@
-﻿using System.Net.WebSockets;
+﻿using System.Linq;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 using HotChocolate;
 using Library.Server.Models;
 using Library.Server.ViewModel;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Library.Server.Graphql
 {
-    public class Mutation
+    public abstract class Mutation
     {
-        public async Task<Borrows> Borrowed([Service] libraryContext library, Borrow borrow)
+        public async Task<Borrows> Borrowed([Service] libraryContext library, BorrowRequest borrowRequest)
         {
-            var output = new Borrows()
+            // ReSharper disable once PossibleNullReferenceException
+            var available = library.Copy.FirstOrDefault(x=> x.Copyid == borrowRequest.Copyid).Available;
+            if(available != null && !(bool)available)
+                return new Borrows();
+            var borrowTransaction = new Borrows()
             {
-                Readerid = borrow.Readerid,
-                Docid = borrow.Docid,
-                Libid = borrow.Libid,
-                Copyid = borrow.Copyid,
-                Duedate = borrow.Duedate,
-                Btime = borrow.Btime,
-                Position = borrow.Position
+                Readerid = borrowRequest.Readerid,
+                Docid = borrowRequest.Docid,
+                Libid = borrowRequest.Libid,
+                Copyid = borrowRequest.Copyid,
+                Duedate = borrowRequest.Duedate,
+                Btime = borrowRequest.Btime,
+                Position = borrowRequest.Position
             };
-            library.Borrows.Add(output);
+            await library.Borrows.AddAsync(borrowTransaction);
+            var copy = library.Copy.FirstOrDefault(x => x.Copyid == borrowTransaction.Copyid);
+            if (copy != null) copy.Available = false;
             await library.SaveChangesAsync();
-            return output;
+            return borrowTransaction;
         }
     }
 }

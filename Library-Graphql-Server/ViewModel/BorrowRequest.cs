@@ -2,7 +2,7 @@
 
 namespace Library.Server.ViewModel
 {
-    public class Borrow
+    public class BorrowRequest
     {
                 public int Readerid { get; set; }
                 public int Docid { get; set; }

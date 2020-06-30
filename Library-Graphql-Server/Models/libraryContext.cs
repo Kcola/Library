@@ -1,18 +1,22 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 namespace Library.Server.Models
 {
     public partial class libraryContext : DbContext
     {
+        private IConfiguration _configuration;
+
         public libraryContext()
         {
         }
 
-        public libraryContext(DbContextOptions<libraryContext> options)
+        public libraryContext(DbContextOptions<libraryContext> options, IConfiguration configuration)
             : base(options)
         {
+            _configuration = configuration;
         }
 
         public virtual DbSet<Author> Author { get; set; }
@@ -36,8 +40,7 @@ namespace Library.Server.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=tcp:koc3.database.windows.net,1433;Initial Catalog=library;Persist Security Info=False;User ID=koc3;Password=Playstation3;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:Library"]);
             }
         }
 
@@ -92,6 +95,10 @@ namespace Library.Server.Models
                     .HasName("PK__borrows__83621B9D74FCE830");
 
                 entity.ToTable("borrows");
+
+                entity.HasIndex(e => e.Bornumber)
+                    .HasName("IX_borrows")
+                    .IsUnique();
 
                 entity.Property(e => e.Bornumber).HasColumnName("bornumber");
 
@@ -192,6 +199,11 @@ namespace Library.Server.Models
                     .HasColumnName("copyid")
                     .HasMaxLength(6)
                     .IsUnicode(false);
+
+                entity.Property(e => e.Available)
+                    .IsRequired()
+                    .HasColumnName("available")
+                    .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.Docid).HasColumnName("docid");
 
