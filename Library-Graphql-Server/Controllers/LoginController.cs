@@ -44,18 +44,18 @@ namespace Library.Server.Controllers
                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString(CultureInfo.InvariantCulture)),
                 new Claim("Id", reader.Readerid.ToString()),
                 new Claim("Email", reader.Email),
-                new Claim("FirstName", reader.Firstname),  
-                new Claim("LastName", reader.Lastname), 
-                new Claim("Address", reader.Address), 
-                new Claim("Zipcode", reader.Zipcode), 
-                new Claim("Rtype", reader.Rtype), 
+                new Claim("FirstName", reader.Firstname),
+                new Claim("LastName", reader.Lastname),
+                new Claim("Address", reader.Address),
+                new Claim("Zipcode", reader.Zipcode),
+                new Claim("Rtype", reader.Rtype),
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], claims, expires: DateTime.Now.AddHours(1), signingCredentials: signIn);
+            var token = new JwtSecurityToken(_configuration["Jwt:Issuer"], _configuration["Jwt:Audience"], claims, expires: DateTime.Now.AddHours(3), signingCredentials: signIn);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        
+
         [HttpPost]
         public IActionResult Post([FromBody] Login credentials)
         {
@@ -64,9 +64,9 @@ namespace Library.Server.Controllers
                 return BadRequest("Invalid credentials");
             var reader = _repository.GetReader(credentials.Username);
             var token = GenerateToken(reader);
-            return Ok(new {Jwt = token});
+            return Ok(new { Jwt = token });
         }
-        
+
         [Authorize]
         [HttpGet]
         public IActionResult Get()

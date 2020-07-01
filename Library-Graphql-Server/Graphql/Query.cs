@@ -7,8 +7,9 @@ using HotChocolate.Types;
 
 namespace Library.Server.Graphql
 {
-       [Authorize]
-    public abstract class Query
+    [Authorize]
+    // ReSharper disable once ClassNeverInstantiated.Global
+    public class Query
     {
         [UsePaging]
         [UseSelection]

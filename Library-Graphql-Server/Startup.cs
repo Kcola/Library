@@ -65,11 +65,10 @@ namespace Library.Server
             app.UseRouting();
 
             app.UseAuthentication();
-            
-            app.UseAuthorization();
-            
-            app.UseGraphQL("/graphql");
 
+            app.UseAuthorization();
+
+            app.UseGraphQL("/graphql");
 
             app.UseEndpoints(endpoints =>
             {

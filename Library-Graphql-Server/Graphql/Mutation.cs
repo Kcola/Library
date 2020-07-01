@@ -1,20 +1,22 @@
-﻿using System.Linq;
-using System.Net.WebSockets;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
 using Library.Server.Models;
 using Library.Server.ViewModel;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Library.Server.Graphql
 {
-    public abstract class Mutation
+    // ReSharper disable once ClassNeverInstantiated.Global
+    [Authorize]
+    public class Mutation
     {
         public async Task<Borrows> Borrowed([Service] libraryContext library, BorrowRequest borrowRequest)
         {
             // ReSharper disable once PossibleNullReferenceException
-            var available = library.Copy.FirstOrDefault(x=> x.Copyid == borrowRequest.Copyid).Available;
-            if(available != null && !(bool)available)
+            var available = library.Copy.FirstOrDefault(x => x.Copyid == borrowRequest.Copyid).Available;
+            if (available != null && !(bool)available)
                 return new Borrows();
             var borrowTransaction = new Borrows()
             {
@@ -31,6 +33,21 @@ namespace Library.Server.Graphql
             if (copy != null) copy.Available = false;
             await library.SaveChangesAsync();
             return borrowTransaction;
+        }
+        public async Task<Borrows> Return([Service] libraryContext library, int borNumber)
+        {
+            // ReSharper disable once PossibleNullReferenceException
+            var borrowed = library.Borrows.FirstOrDefault(x => x.Bornumber == borNumber);
+            if (borrowed == null || borrowed.Rtime != null)
+                return null;
+            else
+            {
+                borrowed.Rtime = DateTime.Now;
+                var copy = library.Copy.FirstOrDefault(x => x.Copyid == borrowed.Copyid);
+                if (copy != null) copy.Available = true;
+                await library.SaveChangesAsync();
+                return borrowed;
+            }
         }
     }
 }
