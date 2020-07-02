@@ -1,22 +1,18 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 namespace Library.Server.Models
 {
     public partial class libraryContext : DbContext
     {
-        private IConfiguration _configuration;
-
         public libraryContext()
         {
         }
 
-        public libraryContext(DbContextOptions<libraryContext> options, IConfiguration configuration)
+        public libraryContext(DbContextOptions<libraryContext> options)
             : base(options)
         {
-            _configuration = configuration;
         }
 
         public virtual DbSet<Author> Author { get; set; }
@@ -40,7 +36,8 @@ namespace Library.Server.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(_configuration["ConnectionStrings:Library"]);
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=tcp:koc3.database.windows.net,1433;Initial Catalog=library;Persist Security Info=False;User ID=koc3;Password=Playstation3;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -201,7 +198,6 @@ namespace Library.Server.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Available)
-                    .IsRequired()
                     .HasColumnName("available")
                     .HasDefaultValueSql("((1))");
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Library.Server.Models;
@@ -15,7 +16,7 @@ namespace Library.Server.Helpers
             _library = library;
         }
 
-        public bool IsAvailable(string copyId)
+        public bool CopyAvailable(string copyId)
         {
             return _library.Copy.FirstOrDefault(x => x.Copyid == copyId)?.Available != null;
         }
@@ -75,6 +76,11 @@ namespace Library.Server.Helpers
                 await _library.SaveChangesAsync();
                 return borrowed;
             }
+        }
+
+        public List<Borrows> GetBorrowed(int readerId)
+        {
+            return _library.Borrows.Where(x => x.Readerid == readerId && x.Rtime == null).ToList();
         }
     }
 }

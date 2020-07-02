@@ -71,15 +71,17 @@ namespace Library.Server.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            var readerId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value ??
+                                     throw new InvalidOperationException());
             var currentUser = new Reader
             {
-                Readerid = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value ??
-                                     throw new InvalidOperationException()),
+                Readerid = readerId,
                 Email = User.Claims.FirstOrDefault(c => c.Type == "Email")?.Value,
                 Firstname = User.Claims.FirstOrDefault(c => c.Type == "FirstName")?.Value,
                 Lastname = User.Claims.FirstOrDefault(c => c.Type == "LastName")?.Value,
                 Address = User.Claims.FirstOrDefault(c => c.Type == "Address")?.Value,
                 Zipcode = User.Claims.FirstOrDefault(c => c.Type == "Zipcode")?.Value,
+                Borrows = _repository.GetBorrowed(readerId)
             };
             return Ok(currentUser);
         }

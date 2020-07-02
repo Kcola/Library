@@ -4,6 +4,7 @@ using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Types.Relay;
 using HotChocolate.Types;
+// ReSharper disable UnusedMember.Global
 
 namespace Library.Server.Graphql
 {
@@ -32,13 +33,6 @@ namespace Library.Server.Graphql
         [UseFiltering]
         public IQueryable<Reserves> GetReserved([Service] libraryContext libraryContext) =>
                libraryContext.Reserves;
-
-        [UsePaging]
-        [UseSelection]
-        [UseSorting]
-        [UseFiltering]
-        public IQueryable<Reader> GetReader([Service] libraryContext libraryContext) =>
-               libraryContext.Reader;
 
         [UsePaging]
         [UseSelection]
