@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HotChocolate;
 using HotChocolate.AspNetCore.Authorization;
+using Library.Server.Helpers;
 using Library.Server.Models;
 using Library.Server.ViewModel;
 
@@ -12,42 +13,23 @@ namespace Library.Server.Graphql
     [Authorize]
     public class Mutation
     {
+        private readonly IRepository _repository;
+
+        public Mutation(IRepository repository)
+        {
+            _repository = repository;
+        }
         public async Task<Borrows> Borrowed([Service] libraryContext library, BorrowRequest borrowRequest)
         {
-            // ReSharper disable once PossibleNullReferenceException
-            var available = library.Copy.FirstOrDefault(x => x.Copyid == borrowRequest.Copyid).Available;
-            if (available != null && !(bool)available)
+            if (_repository.IsAvailable(borrowRequest.Copyid))
                 return new Borrows();
-            var borrowTransaction = new Borrows()
-            {
-                Readerid = borrowRequest.Readerid,
-                Docid = borrowRequest.Docid,
-                Libid = borrowRequest.Libid,
-                Copyid = borrowRequest.Copyid,
-                Duedate = borrowRequest.Duedate,
-                Btime = borrowRequest.Btime,
-                Position = borrowRequest.Position
-            };
-            await library.Borrows.AddAsync(borrowTransaction);
-            var copy = library.Copy.FirstOrDefault(x => x.Copyid == borrowTransaction.Copyid);
-            if (copy != null) copy.Available = false;
-            await library.SaveChangesAsync();
-            return borrowTransaction;
+            var borrowInfo = await _repository.BorrowTransaction(borrowRequest);
+            return borrowInfo;
         }
         public async Task<Borrows> Return([Service] libraryContext library, int borNumber)
         {
-            // ReSharper disable once PossibleNullReferenceException
-            var borrowed = library.Borrows.FirstOrDefault(x => x.Bornumber == borNumber);
-            if (borrowed == null || borrowed.Rtime != null)
-                return null;
-            else
-            {
-                borrowed.Rtime = DateTime.Now;
-                var copy = library.Copy.FirstOrDefault(x => x.Copyid == borrowed.Copyid);
-                if (copy != null) copy.Available = true;
-                await library.SaveChangesAsync();
-                return borrowed;
-            }
+            var borrowInfo = await _repository.ReturnTransaction(borNumber);
+            return borrowInfo;
         }
     }
 }
