@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Library.Server.ViewModel
+namespace Library.Shared
 {
     public class Register
     {

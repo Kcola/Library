@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Library.Server.Models
+namespace Library.Data.Models
 {
     public partial class Proceedings
     {

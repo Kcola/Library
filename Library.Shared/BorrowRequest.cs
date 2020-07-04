@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Library.Server.ViewModel
+namespace Library.Shared
 {
     public class BorrowRequest
     {

@@ -1,4 +1,4 @@
-namespace Library.Server.ViewModel
+namespace Library.Shared
 {
     public class Login
     {

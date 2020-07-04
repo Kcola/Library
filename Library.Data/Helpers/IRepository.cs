@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Library.Server.Models;
-using Library.Server.ViewModel;
+using Library.Data.Models;
+using Library.Shared;
 
-namespace Library.Server.Helpers
+namespace Library.Data.Helpers
 {
     public interface IRepository
     {

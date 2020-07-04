@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Library.Server.Helpers;
-using Library.Server.Models;
-using Library.Server.ViewModel;
+using Library.Data.Helpers;
+using Library.Data.Models;
+using Library.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.Server.Controllers

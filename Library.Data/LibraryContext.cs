@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Library.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Library.Server.Models
+namespace Library.Data
 {
-    public partial class libraryContext : DbContext
+    public partial class LibraryContext : DbContext
     {
-        public libraryContext()
+        public LibraryContext()
         {
         }
 
-        public libraryContext(DbContextOptions<libraryContext> options)
+        public LibraryContext(DbContextOptions<LibraryContext> options)
             : base(options)
         {
         }

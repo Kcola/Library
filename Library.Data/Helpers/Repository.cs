@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Library.Server.Models;
-using Library.Server.ViewModel;
+using Library.Data.Models;
+using Library.Shared;
 
-namespace Library.Server.Helpers
+namespace Library.Data.Helpers
 {
     public class Repository : IRepository
     {
-        private readonly libraryContext _library;
+        private readonly LibraryContext _library;
 
-        public Repository(libraryContext library)
+        public Repository(LibraryContext library)
         {
             _library = library;
         }

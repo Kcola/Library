@@ -2,9 +2,9 @@ using System.Text;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.AspNetCore.Playground;
+using Library.Data;
+using Library.Data.Helpers;
 using Library.Server.Graphql;
-using Library.Server.Helpers;
-using Library.Server.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,7 +48,7 @@ namespace Library.Server
                 .AddMutationType<Mutation>()
                 .AddAuthorizeDirectiveType()
             );
-            services.AddDbContext<libraryContext>();
+            services.AddDbContext<LibraryContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

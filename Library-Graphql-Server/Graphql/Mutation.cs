@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using HotChocolate.AspNetCore.Authorization;
-using Library.Server.Helpers;
-using Library.Server.Models;
-using Library.Server.ViewModel;
+using Library.Data.Helpers;
+using Library.Data.Models;
+using Library.Shared;
+
 // ReSharper disable UnusedMember.Global
 
 namespace Library.Server.Graphql
