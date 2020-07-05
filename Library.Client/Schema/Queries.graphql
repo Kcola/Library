@@ -1,0 +1,13 @@
+query GetBooks($docid: Int){
+    book(where: {docid: $docid}){
+        nodes{
+            docid
+            isbn
+            genre
+            doc{
+                title
+                pdate
+            }
+        }
+    }
+}
