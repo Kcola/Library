@@ -69,6 +69,8 @@ namespace Library.Server
 
             app.UseAuthorization();
 
+            app.UseCors(b => b.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
             app.UseGraphQL("/graphql");
 
             app.UseEndpoints(endpoints =>

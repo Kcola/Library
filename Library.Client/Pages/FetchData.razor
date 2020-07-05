@@ -1,33 +1,35 @@
 @page "/fetchdata"
+@using Library.Client.Schema.Generated
 @inject HttpClient Http
+@inject ILibraryClient LibraryClient
 
-<h1>Weather forecast</h1>
+<h1>Books</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
-
-@if (forecasts == null)
+@if (books == null)
 {
     <p><em>Loading...</em></p>
-}
+}    
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Doc Id</th>
+                <th>Title</th>
+                <th>Genre</th>
+                <th>ISBN</th>
+                <th>Publishing Date</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var book in books)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@book.Docid</td>
+                    <td>@book.Doc.Title</td>
+                    <td>@book.Genre</td>
+                    <td>@book.Isbn</td>
+                    <td>@book.Doc.Pdate.Date</td>
                 </tr>
             }
         </tbody>
@@ -37,9 +39,12 @@ else
 @code {
     private WeatherForecast[] forecasts;
 
+    private IReadOnlyList<IBook> books;
     protected override async Task OnInitializedAsync()
     {
         forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        var response = await LibraryClient.GetBooksAsync(1990);
+        books = response.Data.Book.Nodes;
     }
 
     public class WeatherForecast

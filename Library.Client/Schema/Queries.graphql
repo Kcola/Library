@@ -1,5 +1,5 @@
 query GetBooks($docid: Int){
-    book(where: {docid: $docid}){
+    book(where: {docid_gt: $docid}){
         nodes{
             docid
             isbn
