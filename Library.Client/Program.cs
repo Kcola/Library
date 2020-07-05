@@ -1,14 +1,11 @@
 using System;
 using System.Net.Http;
-using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Text;
 using Library.Client.Schema.Generated;
+using Library.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Library.Client
 {
@@ -18,17 +15,16 @@ namespace Library.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
-
-            builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
-            builder.Services.AddHttpClient("LibraryClient", client =>
+            builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri("https://localhost:6060/") });
+            builder.Services.AddHttpClient("LibraryClient", (services, client) =>
             {
                 client.BaseAddress = new Uri("https://localhost:6060/graphql");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJMaWJyYXJ5VG9rZW4iLCJqdGkiOiJmYjMxOTQ0My04NDM5LTQxMTgtODUwMy05OGM4MTI1ZmJkNWYiLCJpYXQiOiIwNy8wNS8yMDIwIDAyOjM0OjA1IiwiSWQiOiIxIiwiRW1haWwiOiJrb2xhd29sZS5jYW1wYmVsbEBnbWFpbC5jb20iLCJGaXJzdE5hbWUiOiJLb2xhd29sZSIsIkxhc3ROYW1lIjoiQ2FtcGJlbGwiLCJBZGRyZXNzIjoiMjUwIENlbnRyYWwgQXZlLCBOZXdhcmssIE5KMDcxMDMiLCJaaXBjb2RlIjoiMDcxMDMiLCJSdHlwZSI6ImFkbWluIiwiZXhwIjoxNTkzOTI3MjQ1LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MDAxLyIsImF1ZCI6IkxpYnJhcnkifQ.WUChP6STuWNsebAMVmyJwu051LIy2mTYHXdZLfgQ_kI");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", services.GetRequiredService<ITokenStore>().GetToken());
             });
-            
+
             builder.Services.AddLibraryClient();
-            
+            builder.Services.AddSingleton<ITokenStore, TokenStore>();
+            builder.Services.AddSingleton<IAuth, Auth>();
             await builder.Build().RunAsync();
         }
     }

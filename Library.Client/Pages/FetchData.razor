@@ -1,7 +1,9 @@
 @page "/fetchdata"
 @using Library.Client.Schema.Generated
-@inject HttpClient Http
+@using Library.Client.Services
 @inject ILibraryClient LibraryClient
+@inject IAuth Auth;
+@inject ITokenStore TokenStore
 
 <h1>Books</h1>
 
@@ -37,24 +39,17 @@ else
 }
 
 @code {
-    private WeatherForecast[] forecasts;
 
     private IReadOnlyList<IBook> books;
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-        var response = await LibraryClient.GetBooksAsync(1990);
-        books = response.Data.Book.Nodes;
-    }
-
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        if(!Auth.LoggedIn)
+        await Auth.Login("kola", "yer");
+        
+        if (TokenStore.GetToken() != "")
+        {
+            var response = await LibraryClient.GetBooksAsync(1980);
+            if (response.Data != null) books = response.Data.Book.Nodes;
+        }
     }
 }

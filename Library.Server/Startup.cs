@@ -5,6 +5,8 @@ using HotChocolate.AspNetCore.Playground;
 using Library.Data;
 using Library.Data.Helpers;
 using Library.Server.Graphql;
+using Library.Server.Helpers;
+using Library.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +30,7 @@ namespace Library.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IRepository, Repository>();
+            services.AddTransient<ILoginHelper, LoginHelper>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
