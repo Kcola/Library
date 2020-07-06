@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Blazored.LocalStorage;
 using Library.Client.Schema.Generated;
 using Library.Client.Services;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -21,7 +22,7 @@ namespace Library.Client
                 client.BaseAddress = new Uri("https://localhost:6060/graphql");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", services.GetRequiredService<ITokenStore>().GetToken());
             });
-
+            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddLibraryClient();
             builder.Services.AddSingleton<ITokenStore, TokenStore>();
             builder.Services.AddSingleton<IAuth, Auth>();

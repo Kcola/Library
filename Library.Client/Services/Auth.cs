@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Library.Shared;
@@ -22,10 +23,14 @@ namespace Library.Client.Services
                 Username = username,
                 Password = password
             };
+            Token token;
             var response = await _httpClient.PostAsJsonAsync("/login", credentials);
-            var token = await response.Content.ReadFromJsonAsync<Token>();
-            LoggedIn = true;
-            _tokenStore.SetToken(token.Jwt);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                token = await response.Content.ReadFromJsonAsync<Token>();
+                LoggedIn = true;
+                _tokenStore.SetToken(token.Jwt);
+            }
         }
 
         public bool LoggedIn { get; set; } = false;

@@ -1,17 +1,11 @@
 using System;
-using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using HotChocolate.AspNetCore.Authorization;
 using Library.Data.Helpers;
 using Library.Data.Models;
 using Library.Server.Helpers;
 using Library.Shared;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Library.Server.Controllers
 {
@@ -20,7 +14,7 @@ namespace Library.Server.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IRepository _repository;
-        private ILoginHelper _loginHelper;
+        private readonly ILoginHelper _loginHelper;
 
 
         public LoginController(ILoginHelper loginHelper, IRepository repository)
@@ -38,7 +32,8 @@ namespace Library.Server.Controllers
                 return BadRequest("Invalid credentials");
             var reader = _repository.GetReader(credentials.Username);
             var token = _loginHelper.GenerateToken(reader);
-            return Ok(new Token() { Jwt = token });
+            var value = new Token { Jwt = token };
+            return Ok(value);
         }
 
         [Authorize]
