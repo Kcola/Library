@@ -1,5 +1,6 @@
 @page "/fetchdata"
 @using Library.Client.Schema.Generated
+@using Library.Client.Components
 @using Library.Client.Services
 @using Blazored.LocalStorage
 @using Library.Shared
@@ -8,20 +9,12 @@
 @inject ITokenStore TokenStore
 @inject ILocalStorageService LocalStorage
 
-<h1>Books</h1> 
-<button @onclick="@ClearLocalStorage">Clear Local</button>
-@if(authorized == 0){
-<EditForm Model = "@Credentials" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
-        <ValidationSummary />
-    
-        <InputText id="username" @bind-Value="Credentials.Username" />
-        <InputText id="password" type="password" @bind-Value="Credentials.Password" />
-    
-        <button type="submit">Submit</button>
-</EditForm>
+<h1>Book</h1> 
+<button @onclick="@ClearLocalStorage">Log Out</button>
+@if(!Auth.LoggedIn){
+    <LoginForm Authenticated="@Rerender"></LoginForm>
 }
-else if(authorized == 1)
+else
 {
     
 @if (_books == null)
@@ -55,21 +48,19 @@ else
     </table>
 }
     
-}else{
-    <p>Loading</p>
 }
 
 @code {
     public Login Credentials { get; set; } = new Login();
-    private IReadOnlyList<IBook> _books;
-    private int authorized { get; set; } = -1;
+    public IReadOnlyList<IBook> _books { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        if (await LocalStorage.ContainKeyAsync("jwt"))
-            authorized = 1;
-        else
-            authorized = 0;
-        if (authorized == 1)
+        Auth.LoggedIn = await LocalStorage.ContainKeyAsync("jwt");
+        await GetBooks();
+    }
+    private async Task GetBooks()
+    {
+        if (Auth.LoggedIn)
         {
             var token = await LocalStorage.GetItemAsync<string>("jwt");
             TokenStore.SetToken(token);
@@ -81,29 +72,19 @@ else
         }
     }
 
-    private async Task HandleValidSubmit()
-    {
-        await Auth.Login(Credentials.Username, Credentials.Password);
-        if (TokenStore.GetToken() != "")
-        {
-            authorized = 1;
-            await LocalStorage.SetItemAsync("jwt", TokenStore.GetToken());
-            var response = await LibraryClient.GetBooksAsync(1980);
-            if (response.HasErrors)
-                Console.WriteLine(response.Errors.First().Message);
-            else if (response.Data != null) _books = response.Data.Book.Nodes;
-            StateHasChanged();
-            Console.WriteLine("StateChanged");
-        }
-        else
-            authorized = 0;
-    }
-
     private async Task ClearLocalStorage()
     {
         await LocalStorage.ClearAsync();
-        authorized = 0;
+        Auth.LoggedIn = false;
         StateHasChanged();
-        Console.WriteLine("StateChanged");
+    }
+
+    private async Task Rerender()
+    {
+        if (Auth.LoggedIn)
+        {
+            await GetBooks();
+            StateHasChanged();
+        }
     }
 }

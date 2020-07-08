@@ -33,6 +33,7 @@ namespace Library.Client.Services
             }
         }
 
-        public bool LoggedIn { get; set; } = false;
+        public bool LoggedIn { get; set; }
+
     }
 }

@@ -5,6 +5,6 @@ namespace Library.Client.Services
     public interface IAuth
     {
         Task Login(string username, string password);
-        bool LoggedIn { get; set; }
+        public bool LoggedIn { get; set; }
     }
 }
