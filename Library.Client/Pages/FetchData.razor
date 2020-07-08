@@ -68,7 +68,6 @@ else
             if (response.HasErrors)
                 Console.WriteLine(response.Errors.First().Message);
             else if (response.Data != null) _books = response.Data.Book.Nodes;
-            StateHasChanged();
         }
     }
 
@@ -76,15 +75,13 @@ else
     {
         await LocalStorage.ClearAsync();
         Auth.LoggedIn = false;
-        StateHasChanged();
     }
 
-    private async Task Rerender()
+    private async Task Rerender(bool authenticated)
     {
-        if (Auth.LoggedIn)
+        if (authenticated)
         {
             await GetBooks();
-            StateHasChanged();
         }
     }
 }

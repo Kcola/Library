@@ -29,7 +29,7 @@
         if (Auth.LoggedIn)
         {
             await LocalStorage.SetItemAsync("jwt", TokenStore.GetToken());
-            await Authenticated.InvokeAsync(true);
+            await Authenticated.InvokeAsync(Auth.LoggedIn);
         }
         else
             authorized = 0;
