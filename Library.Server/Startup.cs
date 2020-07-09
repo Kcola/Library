@@ -63,6 +63,7 @@ namespace Library.Server
                 app.UseDeveloperExceptionPage();
                 app.UsePlayground(new PlaygroundOptions { Path = "/playground", QueryPath = "/graphql" });
             }
+            app.UseBlazorFrameworkFiles();
 
             app.UseHttpsRedirection();
 
