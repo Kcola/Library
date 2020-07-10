@@ -16,6 +16,14 @@ namespace Library.Client.Services
         private ILocalStorageService _loclStorageService;
         private HttpClient _httpClient;
         private ITokenStore _tokenStore;
+        private ClaimsIdentity _unauthorized = new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.Name, "UNAUTHORIZED"),
+        });
+        private ClaimsIdentity _invalidCredentials = new ClaimsIdentity(new[]
+        {
+            new Claim(ClaimTypes.Name, "INVALID_CREDENTIALS"),
+        });
 
         public JwtAuthenticationProvider(ILocalStorageService localStorageService, HttpClient httpClient, ITokenStore tokenStore)
         {
@@ -27,7 +35,7 @@ namespace Library.Client.Services
         {
             var loggedin = await _loclStorageService.ContainKeyAsync("jwt");
             if (!loggedin)
-                return new AuthenticationState(new ClaimsPrincipal());
+                return new AuthenticationState(new ClaimsPrincipal(_unauthorized));
             return await BuildAuthenticationState();
         }
 
@@ -39,7 +47,7 @@ namespace Library.Client.Services
             var response = await _httpClient.GetAsync("/login");
 
             if (response.StatusCode != HttpStatusCode.OK)
-                return new AuthenticationState(new ClaimsPrincipal());
+                return new AuthenticationState(new ClaimsPrincipal(_invalidCredentials));
 
             var reader = await response.Content.ReadFromJsonAsync<Reader>();
 
@@ -70,15 +78,15 @@ namespace Library.Client.Services
             {
                 var token = await response.Content.ReadFromJsonAsync<Token>();
                 await _loclStorageService.SetItemAsync("jwt", token.Jwt);
-                NotifyAuthenticationStateChanged(BuildAuthenticationState());
             }
+            NotifyAuthenticationStateChanged(BuildAuthenticationState());
         }
 
         public async Task Logout()
         {
             _httpClient.DefaultRequestHeaders.Authorization = null;
             await _loclStorageService.ClearAsync();
-            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal())));
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new ClaimsPrincipal(_unauthorized))));
         }
     }
 

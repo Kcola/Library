@@ -26,6 +26,8 @@ namespace Library.Server.Helpers
         public bool ValidateUser(Login credentials)
         {
             var user = _repository.GetUser(credentials.Username);
+            if (user == null)
+                return false;
             var hashedPassword = user.Password;
             var correctPassword = BCrypt.Net.BCrypt.Verify(credentials.Password, hashedPassword);
             return user.Username != null && correctPassword;

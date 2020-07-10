@@ -3,11 +3,12 @@
 @using Library.Client.Schema.Generated
 @using Library.Client.Services
 @using Blazored.LocalStorage
+@inject IJSRuntime JsRuntime
 @inject ILoginService LoginService
 @inject ITokenStore TokenStore
 @inject ILocalStorageService LocalStorage
 @inject ILibraryClient LibraryClient
-<EditForm Model = "@Credentials" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="@Credentials" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <label for="username">Username</label>
@@ -17,10 +18,20 @@
     <button type="submit">Submit</button>
 </EditForm>
 
+
+
 @code{
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
     public Login Credentials { get; set; } = new Login();
     private async Task HandleValidSubmit()
     {
         await LoginService.Login(Credentials.Username, Credentials.Password);
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+        Console.WriteLine(user.Identity.Name);
+        if (!user.Identity.IsAuthenticated)
+            Console.WriteLine("Invalid Credentials");
     }
+
 }

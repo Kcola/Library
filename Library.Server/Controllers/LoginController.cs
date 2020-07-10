@@ -41,6 +41,8 @@ namespace Library.Server.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            if (!User.Identity.IsAuthenticated)
+                return Unauthorized();
             var readerId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "Id")?.Value ??
                                      throw new InvalidOperationException());
             var currentUser = new Reader
