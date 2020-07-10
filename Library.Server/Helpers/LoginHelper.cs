@@ -8,6 +8,7 @@ using Library.Data.Models;
 using Library.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Reader = Library.Data.Models.Reader;
 
 namespace Library.Server.Helpers
 {

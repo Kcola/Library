@@ -1,23 +1,16 @@
 @page "/fetchdata"
 @using Library.Client.Schema.Generated
-@using Library.Client.Components
 @using Library.Client.Services
 @using Blazored.LocalStorage
 @using Library.Shared
+@using Microsoft.AspNetCore.Authorization
 @inject ILibraryClient LibraryClient
-@inject IAuth Auth;
 @inject ITokenStore TokenStore
 @inject ILocalStorageService LocalStorage
+@attribute [Authorize]
 
 <h1>Book</h1> 
-<button @onclick="@ClearLocalStorage">Log Out</button>
-@if(!Auth.LoggedIn){
-    <LoginForm Authenticated="@Rerender"></LoginForm>
-}
-else
-{
-    
-@if (_books == null)
+@if (Books == null)
 {
     <p><em>Loading...</em></p>
 }    
@@ -34,7 +27,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var book in _books)
+            @foreach (var book in Books)
             {
                 <tr>
                     <td>@book.Docid</td>
@@ -48,40 +41,26 @@ else
     </table>
 }
     
-}
-
 @code {
     public Login Credentials { get; set; } = new Login();
-    public IReadOnlyList<IBook> _books { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    private IReadOnlyList<IBook> Books { get; set; }
     protected override async Task OnInitializedAsync()
-    {
-        Auth.LoggedIn = await LocalStorage.ContainKeyAsync("jwt");
+    { 
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
         await GetBooks();
     }
     private async Task GetBooks()
     {
-        if (Auth.LoggedIn)
-        {
             var token = await LocalStorage.GetItemAsync<string>("jwt");
             TokenStore.SetToken(token);
             var response = await LibraryClient.GetBooksAsync(1980);
             if (response.HasErrors)
                 Console.WriteLine(response.Errors.First().Message);
-            else if (response.Data != null) _books = response.Data.Book.Nodes;
-        }
-    }
-
-    private async Task ClearLocalStorage()
-    {
-        await LocalStorage.ClearAsync();
-        Auth.LoggedIn = false;
-    }
-
-    private async Task Rerender(bool authenticated)
-    {
-        if (authenticated)
-        {
-            await GetBooks();
-        }
+            else if (response.Data != null) Books = response.Data.Book.Nodes;
     }
 }

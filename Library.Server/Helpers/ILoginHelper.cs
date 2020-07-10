@@ -1,5 +1,6 @@
 ﻿using Library.Data.Models;
 using Library.Shared;
+using Reader = Library.Data.Models.Reader;
 
 namespace Library.Server.Helpers
 {
