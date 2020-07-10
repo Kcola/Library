@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -14,13 +14,11 @@
     <PackageReference Include="HotChocolate.Types.Selections" Version="10.4.3" />
     <PackageReference Include="HotChocolate.Types.Sorting" Version="10.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.5" />
-	<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Library.Data\Library.Data.csproj" />
     <ProjectReference Include="..\Library.Shared\Library.Shared.csproj" />
-    <ProjectReference Include="..\Library.Client\Library.Client.csproj" />
   </ItemGroup>
 
 
