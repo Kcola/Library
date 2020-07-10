@@ -25,7 +25,6 @@ namespace Library.Client.Services
         }
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            await _loclStorageService.ClearAsync();
             var loggedin = await _loclStorageService.ContainKeyAsync("jwt");
             if (!loggedin)
                 return new AuthenticationState(new ClaimsPrincipal());
