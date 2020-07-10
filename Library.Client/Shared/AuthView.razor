@@ -1,0 +1,12 @@
+<AuthorizeView>
+    <Authorized>
+        <span>Hello @context.User.Identity.Name</span>
+    </Authorized>
+    <NotAuthorized>
+        <a href="Register">Register</a>
+        <a href="Login" class="nav-link btn btn-link">Log In</a>
+    </NotAuthorized>
+</AuthorizeView>
+@code {
+    
+}

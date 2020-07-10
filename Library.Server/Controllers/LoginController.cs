@@ -6,6 +6,7 @@ using Library.Data.Models;
 using Library.Server.Helpers;
 using Library.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Reader = Library.Data.Models.Reader;
 
 namespace Library.Server.Controllers
 {

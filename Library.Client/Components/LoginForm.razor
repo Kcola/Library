@@ -1,37 +1,26 @@
-
+@page "/login"
 @using Library.Shared
 @using Library.Client.Schema.Generated
 @using Library.Client.Services
 @using Blazored.LocalStorage
-@inject IAuth Auth
+@inject ILoginService LoginService
 @inject ITokenStore TokenStore
 @inject ILocalStorageService LocalStorage
 @inject ILibraryClient LibraryClient
 <EditForm Model = "@Credentials" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
-        <ValidationSummary />
-    
-        <InputText id="username" @bind-Value="Credentials.Username" />
-        <InputText id="password" type="password" @bind-Value="Credentials.Password" />
-    
-        <button type="submit">Submit</button>
+    <ValidationSummary />
+    <label for="username">Username</label>
+    <InputText id="username" @bind-Value="Credentials.Username" />
+    <label for="password">Password</label>
+    <InputText id="password" type="password" @bind-Value="Credentials.Password" />
+    <button type="submit">Submit</button>
 </EditForm>
 
 @code{
-    public IReadOnlyList<IBook> _books { get; set; }
     public Login Credentials { get; set; } = new Login();
-    private int authorized { get; set; } = -1;
-    [Parameter]
-    public EventCallback<bool> Authenticated { get; set; }
     private async Task HandleValidSubmit()
     {
-        await Auth.Login(Credentials.Username, Credentials.Password);
-        if (Auth.LoggedIn)
-        {
-            await LocalStorage.SetItemAsync("jwt", TokenStore.GetToken());
-            await Authenticated.InvokeAsync(Auth.LoggedIn);
-        }
-        else
-            authorized = 0;
+        await LoginService.Login(Credentials.Username, Credentials.Password);
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Blazored.LocalStorage;
 using Library.Client.Schema.Generated;
 using Library.Client.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,7 +26,12 @@ namespace Library.Client
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddLibraryClient();
             builder.Services.AddSingleton<ITokenStore, TokenStore>();
-            builder.Services.AddSingleton<IAuth, Auth>();
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddScoped<JwtAuthenticationProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationProvider>(
+                provider => provider.GetRequiredService<JwtAuthenticationProvider>());
+            builder.Services.AddScoped<ILoginService, JwtAuthenticationProvider>(
+                provider => provider.GetRequiredService<JwtAuthenticationProvider>());
             await builder.Build().RunAsync();
         }
     }

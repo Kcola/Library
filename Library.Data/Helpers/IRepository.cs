@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Library.Data.Models;
 using Library.Shared;
+using Reader = Library.Data.Models.Reader;
 
 namespace Library.Data.Helpers
 {
