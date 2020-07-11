@@ -1,0 +1,748 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"The multiplier path scalar represents a valid GraphQL multiplier path string."
+scalar MultiplierPath
+
+type Query {
+  book(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BookSort where: BookFilter): BookConnection
+  borrowed(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BorrowsSort where: BorrowsFilter): BorrowsConnection
+  branch(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BranchSort where: BranchFilter): BranchConnection
+  copy(after: String before: String first: PaginationAmount last: PaginationAmount order_by: CopySort where: CopyFilter): CopyConnection
+  doc(after: String before: String first: PaginationAmount last: PaginationAmount order_by: DocsSort where: DocsFilter): DocsConnection
+  reserved(after: String before: String first: PaginationAmount last: PaginationAmount order_by: ReservesSort where: ReservesFilter): ReservesConnection
+}
+
+type Mutation {
+  borrowed(borrowRequest: BorrowRequestInput): Borrows
+  return(borNumber: Int!): Borrows
+}
+
+type Book {
+  doc: Docs
+  docid: Int!
+  genre: String
+  isbn: String
+}
+
+type Borrows {
+  bornumber: Int!
+  btime: DateTime!
+  copyid: String
+  doc: Docs
+  docid: Int!
+  duedate: DateTime!
+  fines: Float!
+  lib: Branch
+  libid: Int!
+  position: String
+  reader: Reader
+  readerid: Int!
+  rtime: DateTime
+}
+
+type Reserves {
+  copyid: String
+  doc: Docs
+  docid: Int!
+  dtime: DateTime!
+  lib: Branch
+  libid: Int!
+  position: String
+  ptime: DateTime
+  reader: Reader
+  readerid: Int!
+  resnumber: Int!
+}
+
+type Branch {
+  borrows: [Borrows]
+  copy: [Copy]
+  libid: Int!
+  llocation: String
+  lname: String
+  reserves: [Reserves]
+}
+
+type Copy {
+  available: Boolean
+  copyid: String
+  doc: Docs
+  docid: Int!
+  lib: Branch
+  libid: Int!
+  position: String
+}
+
+type Docs {
+  borrows: [Borrows]
+  copy: [Copy]
+  docid: Int!
+  invEditor: [InvEditor]
+  journalIssue: [JournalIssue]
+  pdate: DateTime!
+  publisher: Publisher
+  publisherid: Int!
+  reserves: [Reserves]
+  title: String
+  writes: [Writes]
+}
+
+input BookSort {
+  docid: SortOperationKind
+  genre: SortOperationKind
+  isbn: SortOperationKind
+}
+
+input BookFilter {
+  AND: [BookFilter!]
+  docid: Int
+  docid_gt: Int
+  docid_gte: Int
+  docid_in: [Int!]
+  docid_lt: Int
+  docid_lte: Int
+  docid_not: Int
+  docid_not_gt: Int
+  docid_not_gte: Int
+  docid_not_in: [Int!]
+  docid_not_lt: Int
+  docid_not_lte: Int
+  genre: String
+  genre_contains: String
+  genre_ends_with: String
+  genre_in: [String]
+  genre_not: String
+  genre_not_contains: String
+  genre_not_ends_with: String
+  genre_not_in: [String]
+  genre_not_starts_with: String
+  genre_starts_with: String
+  isbn: String
+  isbn_contains: String
+  isbn_ends_with: String
+  isbn_in: [String]
+  isbn_not: String
+  isbn_not_contains: String
+  isbn_not_ends_with: String
+  isbn_not_in: [String]
+  isbn_not_starts_with: String
+  isbn_starts_with: String
+  OR: [BookFilter!]
+}
+
+input BorrowsSort {
+  bornumber: SortOperationKind
+  btime: SortOperationKind
+  copyid: SortOperationKind
+  docid: SortOperationKind
+  duedate: SortOperationKind
+  fines: SortOperationKind
+  libid: SortOperationKind
+  position: SortOperationKind
+  readerid: SortOperationKind
+  rtime: SortOperationKind
+}
+
+input BorrowsFilter {
+  AND: [BorrowsFilter!]
+  bornumber: Int
+  bornumber_gt: Int
+  bornumber_gte: Int
+  bornumber_in: [Int!]
+  bornumber_lt: Int
+  bornumber_lte: Int
+  bornumber_not: Int
+  bornumber_not_gt: Int
+  bornumber_not_gte: Int
+  bornumber_not_in: [Int!]
+  bornumber_not_lt: Int
+  bornumber_not_lte: Int
+  btime: DateTime
+  btime_gt: DateTime
+  btime_gte: DateTime
+  btime_in: [DateTime!]
+  btime_lt: DateTime
+  btime_lte: DateTime
+  btime_not: DateTime
+  btime_not_gt: DateTime
+  btime_not_gte: DateTime
+  btime_not_in: [DateTime!]
+  btime_not_lt: DateTime
+  btime_not_lte: DateTime
+  copyid: String
+  copyid_contains: String
+  copyid_ends_with: String
+  copyid_in: [String]
+  copyid_not: String
+  copyid_not_contains: String
+  copyid_not_ends_with: String
+  copyid_not_in: [String]
+  copyid_not_starts_with: String
+  copyid_starts_with: String
+  docid: Int
+  docid_gt: Int
+  docid_gte: Int
+  docid_in: [Int!]
+  docid_lt: Int
+  docid_lte: Int
+  docid_not: Int
+  docid_not_gt: Int
+  docid_not_gte: Int
+  docid_not_in: [Int!]
+  docid_not_lt: Int
+  docid_not_lte: Int
+  duedate: DateTime
+  duedate_gt: DateTime
+  duedate_gte: DateTime
+  duedate_in: [DateTime!]
+  duedate_lt: DateTime
+  duedate_lte: DateTime
+  duedate_not: DateTime
+  duedate_not_gt: DateTime
+  duedate_not_gte: DateTime
+  duedate_not_in: [DateTime!]
+  duedate_not_lt: DateTime
+  duedate_not_lte: DateTime
+  fines: Float
+  fines_gt: Float
+  fines_gte: Float
+  fines_in: [Float!]
+  fines_lt: Float
+  fines_lte: Float
+  fines_not: Float
+  fines_not_gt: Float
+  fines_not_gte: Float
+  fines_not_in: [Float!]
+  fines_not_lt: Float
+  fines_not_lte: Float
+  libid: Int
+  libid_gt: Int
+  libid_gte: Int
+  libid_in: [Int!]
+  libid_lt: Int
+  libid_lte: Int
+  libid_not: Int
+  libid_not_gt: Int
+  libid_not_gte: Int
+  libid_not_in: [Int!]
+  libid_not_lt: Int
+  libid_not_lte: Int
+  OR: [BorrowsFilter!]
+  position: String
+  position_contains: String
+  position_ends_with: String
+  position_in: [String]
+  position_not: String
+  position_not_contains: String
+  position_not_ends_with: String
+  position_not_in: [String]
+  position_not_starts_with: String
+  position_starts_with: String
+  readerid: Int
+  readerid_gt: Int
+  readerid_gte: Int
+  readerid_in: [Int!]
+  readerid_lt: Int
+  readerid_lte: Int
+  readerid_not: Int
+  readerid_not_gt: Int
+  readerid_not_gte: Int
+  readerid_not_in: [Int!]
+  readerid_not_lt: Int
+  readerid_not_lte: Int
+  rtime: DateTime
+  rtime_gt: DateTime
+  rtime_gte: DateTime
+  rtime_in: [DateTime]
+  rtime_lt: DateTime
+  rtime_lte: DateTime
+  rtime_not: DateTime
+  rtime_not_gt: DateTime
+  rtime_not_gte: DateTime
+  rtime_not_in: [DateTime]
+  rtime_not_lt: DateTime
+  rtime_not_lte: DateTime
+}
+
+input ReservesSort {
+  copyid: SortOperationKind
+  docid: SortOperationKind
+  dtime: SortOperationKind
+  libid: SortOperationKind
+  position: SortOperationKind
+  ptime: SortOperationKind
+  readerid: SortOperationKind
+  resnumber: SortOperationKind
+}
+
+input ReservesFilter {
+  AND: [ReservesFilter!]
+  copyid: String
+  copyid_contains: String
+  copyid_ends_with: String
+  copyid_in: [String]
+  copyid_not: String
+  copyid_not_contains: String
+  copyid_not_ends_with: String
+  copyid_not_in: [String]
+  copyid_not_starts_with: String
+  copyid_starts_with: String
+  docid: Int
+  docid_gt: Int
+  docid_gte: Int
+  docid_in: [Int!]
+  docid_lt: Int
+  docid_lte: Int
+  docid_not: Int
+  docid_not_gt: Int
+  docid_not_gte: Int
+  docid_not_in: [Int!]
+  docid_not_lt: Int
+  docid_not_lte: Int
+  dtime: DateTime
+  dtime_gt: DateTime
+  dtime_gte: DateTime
+  dtime_in: [DateTime!]
+  dtime_lt: DateTime
+  dtime_lte: DateTime
+  dtime_not: DateTime
+  dtime_not_gt: DateTime
+  dtime_not_gte: DateTime
+  dtime_not_in: [DateTime!]
+  dtime_not_lt: DateTime
+  dtime_not_lte: DateTime
+  libid: Int
+  libid_gt: Int
+  libid_gte: Int
+  libid_in: [Int!]
+  libid_lt: Int
+  libid_lte: Int
+  libid_not: Int
+  libid_not_gt: Int
+  libid_not_gte: Int
+  libid_not_in: [Int!]
+  libid_not_lt: Int
+  libid_not_lte: Int
+  OR: [ReservesFilter!]
+  position: String
+  position_contains: String
+  position_ends_with: String
+  position_in: [String]
+  position_not: String
+  position_not_contains: String
+  position_not_ends_with: String
+  position_not_in: [String]
+  position_not_starts_with: String
+  position_starts_with: String
+  ptime: DateTime
+  ptime_gt: DateTime
+  ptime_gte: DateTime
+  ptime_in: [DateTime]
+  ptime_lt: DateTime
+  ptime_lte: DateTime
+  ptime_not: DateTime
+  ptime_not_gt: DateTime
+  ptime_not_gte: DateTime
+  ptime_not_in: [DateTime]
+  ptime_not_lt: DateTime
+  ptime_not_lte: DateTime
+  readerid: Int
+  readerid_gt: Int
+  readerid_gte: Int
+  readerid_in: [Int!]
+  readerid_lt: Int
+  readerid_lte: Int
+  readerid_not: Int
+  readerid_not_gt: Int
+  readerid_not_gte: Int
+  readerid_not_in: [Int!]
+  readerid_not_lt: Int
+  readerid_not_lte: Int
+  resnumber: Int
+  resnumber_gt: Int
+  resnumber_gte: Int
+  resnumber_in: [Int!]
+  resnumber_lt: Int
+  resnumber_lte: Int
+  resnumber_not: Int
+  resnumber_not_gt: Int
+  resnumber_not_gte: Int
+  resnumber_not_in: [Int!]
+  resnumber_not_lt: Int
+  resnumber_not_lte: Int
+}
+
+input BranchSort {
+  libid: SortOperationKind
+  llocation: SortOperationKind
+  lname: SortOperationKind
+}
+
+input BranchFilter {
+  AND: [BranchFilter!]
+  libid: Int
+  libid_gt: Int
+  libid_gte: Int
+  libid_in: [Int!]
+  libid_lt: Int
+  libid_lte: Int
+  libid_not: Int
+  libid_not_gt: Int
+  libid_not_gte: Int
+  libid_not_in: [Int!]
+  libid_not_lt: Int
+  libid_not_lte: Int
+  llocation: String
+  llocation_contains: String
+  llocation_ends_with: String
+  llocation_in: [String]
+  llocation_not: String
+  llocation_not_contains: String
+  llocation_not_ends_with: String
+  llocation_not_in: [String]
+  llocation_not_starts_with: String
+  llocation_starts_with: String
+  lname: String
+  lname_contains: String
+  lname_ends_with: String
+  lname_in: [String]
+  lname_not: String
+  lname_not_contains: String
+  lname_not_ends_with: String
+  lname_not_in: [String]
+  lname_not_starts_with: String
+  lname_starts_with: String
+  OR: [BranchFilter!]
+}
+
+input CopySort {
+  available: SortOperationKind
+  copyid: SortOperationKind
+  docid: SortOperationKind
+  libid: SortOperationKind
+  position: SortOperationKind
+}
+
+input CopyFilter {
+  AND: [CopyFilter!]
+  available: Boolean
+  available_not: Boolean
+  copyid: String
+  copyid_contains: String
+  copyid_ends_with: String
+  copyid_in: [String]
+  copyid_not: String
+  copyid_not_contains: String
+  copyid_not_ends_with: String
+  copyid_not_in: [String]
+  copyid_not_starts_with: String
+  copyid_starts_with: String
+  docid: Int
+  docid_gt: Int
+  docid_gte: Int
+  docid_in: [Int!]
+  docid_lt: Int
+  docid_lte: Int
+  docid_not: Int
+  docid_not_gt: Int
+  docid_not_gte: Int
+  docid_not_in: [Int!]
+  docid_not_lt: Int
+  docid_not_lte: Int
+  libid: Int
+  libid_gt: Int
+  libid_gte: Int
+  libid_in: [Int!]
+  libid_lt: Int
+  libid_lte: Int
+  libid_not: Int
+  libid_not_gt: Int
+  libid_not_gte: Int
+  libid_not_in: [Int!]
+  libid_not_lt: Int
+  libid_not_lte: Int
+  OR: [CopyFilter!]
+  position: String
+  position_contains: String
+  position_ends_with: String
+  position_in: [String]
+  position_not: String
+  position_not_contains: String
+  position_not_ends_with: String
+  position_not_in: [String]
+  position_not_starts_with: String
+  position_starts_with: String
+}
+
+input DocsSort {
+  docid: SortOperationKind
+  pdate: SortOperationKind
+  publisherid: SortOperationKind
+  title: SortOperationKind
+}
+
+input DocsFilter {
+  AND: [DocsFilter!]
+  docid: Int
+  docid_gt: Int
+  docid_gte: Int
+  docid_in: [Int!]
+  docid_lt: Int
+  docid_lte: Int
+  docid_not: Int
+  docid_not_gt: Int
+  docid_not_gte: Int
+  docid_not_in: [Int!]
+  docid_not_lt: Int
+  docid_not_lte: Int
+  OR: [DocsFilter!]
+  pdate: DateTime
+  pdate_gt: DateTime
+  pdate_gte: DateTime
+  pdate_in: [DateTime!]
+  pdate_lt: DateTime
+  pdate_lte: DateTime
+  pdate_not: DateTime
+  pdate_not_gt: DateTime
+  pdate_not_gte: DateTime
+  pdate_not_in: [DateTime!]
+  pdate_not_lt: DateTime
+  pdate_not_lte: DateTime
+  publisherid: Int
+  publisherid_gt: Int
+  publisherid_gte: Int
+  publisherid_in: [Int!]
+  publisherid_lt: Int
+  publisherid_lte: Int
+  publisherid_not: Int
+  publisherid_not_gt: Int
+  publisherid_not_gte: Int
+  publisherid_not_in: [Int!]
+  publisherid_not_lt: Int
+  publisherid_not_lte: Int
+  title: String
+  title_contains: String
+  title_ends_with: String
+  title_in: [String]
+  title_not: String
+  title_not_contains: String
+  title_not_ends_with: String
+  title_not_in: [String]
+  title_not_starts_with: String
+  title_starts_with: String
+}
+
+"A connection to a list of items."
+type BookConnection {
+  "A list of edges."
+  edges: [BookEdge!]
+  "A flattened list of the nodes."
+  nodes: [Book]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"A connection to a list of items."
+type DocsConnection {
+  "A list of edges."
+  edges: [DocsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Docs]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+scalar PaginationAmount
+
+"A connection to a list of items."
+type BorrowsConnection {
+  "A list of edges."
+  edges: [BorrowsEdge!]
+  "A flattened list of the nodes."
+  nodes: [Borrows]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"A connection to a list of items."
+type ReservesConnection {
+  "A list of edges."
+  edges: [ReservesEdge!]
+  "A flattened list of the nodes."
+  nodes: [Reserves]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"A connection to a list of items."
+type BranchConnection {
+  "A list of edges."
+  edges: [BranchEdge!]
+  "A flattened list of the nodes."
+  nodes: [Branch]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"A connection to a list of items."
+type CopyConnection {
+  "A list of edges."
+  edges: [CopyEdge!]
+  "A flattened list of the nodes."
+  nodes: [Copy]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+enum SortOperationKind {
+  ASC
+  DESC
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+}
+
+"An edge in a connection."
+type BookEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Book
+}
+
+"An edge in a connection."
+type CopyEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Copy
+}
+
+"An edge in a connection."
+type DocsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Docs
+}
+
+"An edge in a connection."
+type BorrowsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Borrows
+}
+
+"An edge in a connection."
+type ReservesEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Reserves
+}
+
+"An edge in a connection."
+type BranchEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Branch
+}
+
+input BorrowRequestInput {
+  btime: DateTime!
+  copyid: String
+  docid: Int!
+  duedate: DateTime!
+  libid: Int!
+  position: String
+  readerid: Int!
+}
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+type Reader {
+  address: String
+  borrows: [Borrows]
+  email: String
+  firstname: String
+  lastname: String
+  readerid: Int!
+  reserves: [Reserves]
+  rtype: String
+  users: Users
+  zipcode: String
+}
+
+type Publisher {
+  address: String
+  document: [Docs]
+  publisherid: Int!
+  pubname: String
+  zipcode: String
+}
+
+type InvEditor {
+  doc: Docs
+  docid: Int!
+  iename: String
+  issueNo: Int!
+  issueNoNavigation: JournalIssue
+}
+
+type JournalIssue {
+  doc: Docs
+  docid: Int!
+  invEditor: [InvEditor]
+  issueNo: Int!
+  scope: String
+}
+
+type Writes {
+  author: Author
+  authorid: Int!
+  doc: Docs
+  docid: Int!
+}
+
+type Users {
+  email: String
+  firstname: String
+  lastname: String
+  password: String
+  reader: Reader
+  readerid: Int!
+  role: String
+  username: String
+}
+
+type Author {
+  aname: String
+  authorid: Int!
+  writes: [Writes]
+}
+
+"The cost directives is used to express the complexity of a field."
+directive @cost("Defines the complexity of the field." complexity: Int! = 1 "Defines field arguments that act as complexity multipliers." multipliers: [MultiplierPath!]) on FIELD_DEFINITION
+
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access to the annotated resource." roles: [String!]) repeatable on OBJECT | FIELD_DEFINITION

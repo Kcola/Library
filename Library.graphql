@@ -7,12 +7,12 @@ schema {
 scalar MultiplierPath
 
 type Query {
-  book(after: String before: String first: Int last: Int order_by: BookSort where: BookFilter): BookConnection
-  borrowed(after: String before: String first: Int last: Int order_by: BorrowsSort where: BorrowsFilter): BorrowsConnection
-  branch(after: String before: String first: Int last: Int order_by: BranchSort where: BranchFilter): BranchConnection
-  copy(after: String before: String first: Int last: Int order_by: CopySort where: CopyFilter): CopyConnection
-  doc(after: String before: String first: Int last: Int order_by: DocsSort where: DocsFilter): DocsConnection
-  reserved(after: String before: String first: Int last: Int order_by: ReservesSort where: ReservesFilter): ReservesConnection
+  book(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BookSort where: BookFilter): BookConnection
+  borrowed(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BorrowsSort where: BorrowsFilter): BorrowsConnection
+  branch(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BranchSort where: BranchFilter): BranchConnection
+  copy(after: String before: String first: PaginationAmount last: PaginationAmount order_by: CopySort where: CopyFilter): CopyConnection
+  doc(after: String before: String first: PaginationAmount last: PaginationAmount order_by: DocsSort where: DocsFilter): DocsConnection
+  reserved(after: String before: String first: PaginationAmount last: PaginationAmount order_by: ReservesSort where: ReservesFilter): ReservesConnection
 }
 
 type Mutation {
@@ -557,6 +557,7 @@ type DocsConnection {
   totalCount: Int!
 }
 
+scalar PaginationAmount
 
 "A connection to a list of items."
 type BorrowsConnection {

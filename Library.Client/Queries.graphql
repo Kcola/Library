@@ -1,0 +1,16 @@
+query getDocs($first: PaginationAmount, $search:String, $after: String, $before: String){
+    doc(first: $first, where: { title_contains: $search }, after:$after, before:$before) {
+        edges {
+            cursor
+            node {
+                title
+            }
+        }
+        pageInfo {
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+        }
+    }
+}
