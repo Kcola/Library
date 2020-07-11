@@ -9,6 +9,6 @@ namespace Library.Data.Models
         public string Clocation { get; set; }
         public string Ceditor { get; set; }
 
-        public virtual Document Doc { get; set; }
+        public virtual Docs Doc { get; set; }
     }
 }

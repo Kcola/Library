@@ -6,6 +6,6 @@
         public int Docid { get; set; }
 
         public virtual Author Author { get; set; }
-        public virtual Document Doc { get; set; }
+        public virtual Docs Doc { get; set; }
     }
 }

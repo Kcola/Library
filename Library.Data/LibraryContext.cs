@@ -20,7 +20,7 @@ namespace Library.Data
         public virtual DbSet<Branch> Branch { get; set; }
         public virtual DbSet<ChiefEditor> ChiefEditor { get; set; }
         public virtual DbSet<Copy> Copy { get; set; }
-        public virtual DbSet<Document> Document { get; set; }
+        public virtual DbSet<Docs> Doc { get; set; }
         public virtual DbSet<InvEditor> InvEditor { get; set; }
         public virtual DbSet<JournalIssue> JournalIssue { get; set; }
         public virtual DbSet<JournalVolume> JournalVolume { get; set; }
@@ -223,7 +223,7 @@ namespace Library.Data
                     .HasConstraintName("FK_libid1");
             });
 
-            modelBuilder.Entity<Document>(entity =>
+            modelBuilder.Entity<Docs>(entity =>
             {
                 entity.HasKey(e => e.Docid)
                     .HasName("PK__document__0638DBFA77839155");

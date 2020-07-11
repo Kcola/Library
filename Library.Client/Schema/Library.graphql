@@ -7,11 +7,12 @@ schema {
 scalar MultiplierPath
 
 type Query {
-  book(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BookSort where: BookFilter): BookConnection
-  borrowed(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BorrowsSort where: BorrowsFilter): BorrowsConnection
-  branch(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BranchSort where: BranchFilter): BranchConnection
-  copy(after: String before: String first: PaginationAmount last: PaginationAmount order_by: CopySort where: CopyFilter): CopyConnection
-  reserved(after: String before: String first: PaginationAmount last: PaginationAmount order_by: ReservesSort where: ReservesFilter): ReservesConnection
+  book(after: String before: String first: Int last: Int order_by: BookSort where: BookFilter): BookConnection
+  borrowed(after: String before: String first: Int last: Int order_by: BorrowsSort where: BorrowsFilter): BorrowsConnection
+  branch(after: String before: String first: Int last: Int order_by: BranchSort where: BranchFilter): BranchConnection
+  copy(after: String before: String first: Int last: Int order_by: CopySort where: CopyFilter): CopyConnection
+  doc(after: String before: String first: Int last: Int order_by: DocsSort where: DocsFilter): DocsConnection
+  reserved(after: String before: String first: Int last: Int order_by: ReservesSort where: ReservesFilter): ReservesConnection
 }
 
 type Mutation {
@@ -20,7 +21,7 @@ type Mutation {
 }
 
 type Book {
-  doc: Document
+  doc: Docs
   docid: Int!
   genre: String
   isbn: String
@@ -30,7 +31,7 @@ type Borrows {
   bornumber: Int!
   btime: DateTime!
   copyid: String
-  doc: Document
+  doc: Docs
   docid: Int!
   duedate: DateTime!
   fines: Float!
@@ -44,7 +45,7 @@ type Borrows {
 
 type Reserves {
   copyid: String
-  doc: Document
+  doc: Docs
   docid: Int!
   dtime: DateTime!
   lib: Branch
@@ -68,11 +69,25 @@ type Branch {
 type Copy {
   available: Boolean
   copyid: String
-  doc: Document
+  doc: Docs
   docid: Int!
   lib: Branch
   libid: Int!
   position: String
+}
+
+type Docs {
+  borrows: [Borrows]
+  copy: [Copy]
+  docid: Int!
+  invEditor: [InvEditor]
+  journalIssue: [JournalIssue]
+  pdate: DateTime!
+  publisher: Publisher
+  publisherid: Int!
+  reserves: [Reserves]
+  title: String
+  writes: [Writes]
 }
 
 input BookSort {
@@ -462,6 +477,64 @@ input CopyFilter {
   position_starts_with: String
 }
 
+input DocsSort {
+  docid: SortOperationKind
+  pdate: SortOperationKind
+  publisherid: SortOperationKind
+  title: SortOperationKind
+}
+
+input DocsFilter {
+  AND: [DocsFilter!]
+  docid: Int
+  docid_gt: Int
+  docid_gte: Int
+  docid_in: [Int!]
+  docid_lt: Int
+  docid_lte: Int
+  docid_not: Int
+  docid_not_gt: Int
+  docid_not_gte: Int
+  docid_not_in: [Int!]
+  docid_not_lt: Int
+  docid_not_lte: Int
+  OR: [DocsFilter!]
+  pdate: DateTime
+  pdate_gt: DateTime
+  pdate_gte: DateTime
+  pdate_in: [DateTime!]
+  pdate_lt: DateTime
+  pdate_lte: DateTime
+  pdate_not: DateTime
+  pdate_not_gt: DateTime
+  pdate_not_gte: DateTime
+  pdate_not_in: [DateTime!]
+  pdate_not_lt: DateTime
+  pdate_not_lte: DateTime
+  publisherid: Int
+  publisherid_gt: Int
+  publisherid_gte: Int
+  publisherid_in: [Int!]
+  publisherid_lt: Int
+  publisherid_lte: Int
+  publisherid_not: Int
+  publisherid_not_gt: Int
+  publisherid_not_gte: Int
+  publisherid_not_in: [Int!]
+  publisherid_not_lt: Int
+  publisherid_not_lte: Int
+  title: String
+  title_contains: String
+  title_ends_with: String
+  title_in: [String]
+  title_not: String
+  title_not_contains: String
+  title_not_ends_with: String
+  title_not_in: [String]
+  title_not_starts_with: String
+  title_starts_with: String
+}
+
 "A connection to a list of items."
 type BookConnection {
   "A list of edges."
@@ -474,17 +547,16 @@ type BookConnection {
 }
 
 "A connection to a list of items."
-type CopyConnection {
+type DocsConnection {
   "A list of edges."
-  edges: [CopyEdge!]
+  edges: [DocsEdge!]
   "A flattened list of the nodes."
-  nodes: [Copy]
+  nodes: [Docs]
   "Information to aid in pagination."
   pageInfo: PageInfo!
   totalCount: Int!
 }
 
-scalar PaginationAmount
 
 "A connection to a list of items."
 type BorrowsConnection {
@@ -519,6 +591,17 @@ type BranchConnection {
   totalCount: Int!
 }
 
+"A connection to a list of items."
+type CopyConnection {
+  "A list of edges."
+  edges: [CopyEdge!]
+  "A flattened list of the nodes."
+  nodes: [Copy]
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 enum SortOperationKind {
   ASC
   DESC
@@ -545,19 +628,19 @@ type BookEdge {
 }
 
 "An edge in a connection."
-type BranchEdge {
-  "A cursor for use in pagination."
-  cursor: String!
-  "The item at the end of the edge."
-  node: Branch
-}
-
-"An edge in a connection."
 type CopyEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
   node: Copy
+}
+
+"An edge in a connection."
+type DocsEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Docs
 }
 
 "An edge in a connection."
@@ -576,6 +659,14 @@ type ReservesEdge {
   node: Reserves
 }
 
+"An edge in a connection."
+type BranchEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Branch
+}
+
 input BorrowRequestInput {
   btime: DateTime!
   copyid: String
@@ -584,20 +675,6 @@ input BorrowRequestInput {
   libid: Int!
   position: String
   readerid: Int!
-}
-
-type Document {
-  borrows: [Borrows]
-  copy: [Copy]
-  docid: Int!
-  invEditor: [InvEditor]
-  journalIssue: [JournalIssue]
-  pdate: DateTime!
-  publisher: Publisher
-  publisherid: Int!
-  reserves: [Reserves]
-  title: String
-  writes: [Writes]
 }
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
@@ -618,14 +695,14 @@ type Reader {
 
 type Publisher {
   address: String
-  document: [Document]
+  document: [Docs]
   publisherid: Int!
   pubname: String
   zipcode: String
 }
 
 type InvEditor {
-  doc: Document
+  doc: Docs
   docid: Int!
   iename: String
   issueNo: Int!
@@ -633,7 +710,7 @@ type InvEditor {
 }
 
 type JournalIssue {
-  doc: Document
+  doc: Docs
   docid: Int!
   invEditor: [InvEditor]
   issueNo: Int!
@@ -643,7 +720,7 @@ type JournalIssue {
 type Writes {
   author: Author
   authorid: Int!
-  doc: Document
+  doc: Docs
   docid: Int!
 }
 

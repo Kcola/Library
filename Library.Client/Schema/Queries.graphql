@@ -1,13 +1,40 @@
-query GetBooks($docid: Int){
-    book(where: {docid_gt: $docid}){
-        nodes{
-            docid
-            isbn
-            genre
-            doc{
-                title
-                pdate
-            }
-        }
+query GetBooks($docid: Int) {
+  book(where: { docid_gt: $docid }) {
+    nodes {
+      docid
+      isbn
+      genre
+      doc {
+        title
+        pdate
+      }
     }
+  }
+}
+
+query GetDocs(
+  $first: Int
+  $contains: String
+  $after: String
+  $before: String
+) {
+  doc(
+    first: $first
+    where: { title_contains: $contains }
+    after: $after
+    before: $before
+  ) {
+    edges {
+      cursor
+      node {
+        title
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+  }
 }

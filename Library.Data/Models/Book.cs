@@ -6,6 +6,6 @@
         public string Isbn { get; set; }
         public string Genre { get; set; }
 
-        public virtual Document Doc { get; set; }
+        public virtual Docs Doc { get; set; }
     }
 }

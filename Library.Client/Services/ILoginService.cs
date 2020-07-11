@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
 
-public interface ILoginService
+namespace Library.Client.Services
 {
-    Task Login(string username, string password);
-    Task Logout();
+    public interface ILoginService
+    {
+        Task Login(string username, string password);
+        Task Logout();
+    }
 }

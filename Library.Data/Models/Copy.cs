@@ -8,7 +8,7 @@
         public string Position { get; set; }
         public bool? Available { get; set; }
 
-        public virtual Document Doc { get; set; }
+        public virtual Docs Doc { get; set; }
         public virtual Branch Lib { get; set; }
     }
 }

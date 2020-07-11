@@ -15,7 +15,7 @@ namespace Library.Data.Models
         public DateTime Duedate { get; set; }
         public string Position { get; set; }
 
-        public virtual Document Doc { get; set; }
+        public virtual Docs Doc { get; set; }
         public virtual Branch Lib { get; set; }
         public virtual Reader Reader { get; set; }
     }

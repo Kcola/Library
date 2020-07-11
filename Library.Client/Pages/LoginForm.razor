@@ -8,14 +8,19 @@
 @inject ITokenStore TokenStore
 @inject ILocalStorageService LocalStorage
 @inject ILibraryClient LibraryClient
-<EditForm Model="@Credentials" OnValidSubmit="@HandleValidSubmit">
+@inject NavigationManager NavManager
+<EditForm style="width: 50%;" Model="@Credentials" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
+    <div class="form-group">
     <label for="username">Username</label>
-    <InputText id="username" @bind-Value="Credentials.Username" />
+    <InputText class="form-control" id="username" @bind-Value="Credentials.Username" />
+    </div>
+    <div class="form-group">
     <label for="password">Password</label>
-    <InputText id="password" type="password" @bind-Value="Credentials.Password" />
-    <button type="submit">Submit</button>
+    <InputText class="form-control" id="password" type="password" @bind-Value="Credentials.Password" />
+    </div>
+    <button class="btn btn-success"type="submit">Login</button>
 </EditForm>
 
 
@@ -24,14 +29,22 @@
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
     public Login Credentials { get; set; } = new Login();
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+            NavManager.NavigateTo("/");
+    }
     private async Task HandleValidSubmit()
     {
         await LoginService.Login(Credentials.Username, Credentials.Password);
         var authState = await AuthenticationStateTask;
         var user = authState.User;
-        Console.WriteLine(user.Identity.Name);
         if (!user.Identity.IsAuthenticated)
-            Console.WriteLine("Invalid Credentials");
+            Console.WriteLine(user.Identity.Name);
+        else
+            NavManager.NavigateTo("/");
     }
 
 }

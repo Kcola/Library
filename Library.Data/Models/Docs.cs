@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Library.Data.Models
 {
-    public partial class Document
+    [Table("document")]
+    public partial class Docs
     {
-        public Document()
+        public Docs()
         {
             Borrows = new HashSet<Borrows>();
             Copy = new HashSet<Copy>();

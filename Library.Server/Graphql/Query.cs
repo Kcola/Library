@@ -49,5 +49,12 @@ namespace Library.Server.Graphql
         [UseFiltering]
         public IQueryable<Copy> GetCopy([Service] LibraryContext libraryContext) =>
                libraryContext.Copy;
+
+        [UsePaging]
+        [UseSelection]
+        [UseSorting]
+        [UseFiltering]
+        public IQueryable<Docs> GetDoc([Service] LibraryContext libraryContext) =>
+               libraryContext.Doc;
     }
 }
