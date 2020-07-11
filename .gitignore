@@ -39,4 +39,4 @@ msbuild.wrn
 /.idea/.idea.Library.Server/.idea/projectSettingsUpdater.xml
 /.idea/.idea.Library.Server/riderModule.iml
 /.idea/.idea.Library.Server/.idea/vcs.xml
-/Library.Client/Schema/Generated/
+/Library.Client/Generated/

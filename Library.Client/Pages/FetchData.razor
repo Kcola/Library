@@ -1,7 +1,7 @@
 @page "/fetchdata"
-@using Library.Client.Schema.Generated
 @using Library.Client.Services
 @using Blazored.LocalStorage
+@using Library.Client.Generated
 @using Library.Shared
 @using Microsoft.AspNetCore.Authorization
 @inject ILibraryClient LibraryClient
@@ -10,31 +10,35 @@
 @attribute [Authorize]
 
 <h1>Book</h1> 
-@if (Books == null)
+@if (Documents == null)
 {
     <p><em>Loading...</em></p>
 }    
 else
 {
+    <p>@Search</p>
+    <input style="width:200px;" class="form-control" id="search" @bind-Value="Search" @bind-Value:event= "oninput">
+    <button class="btn btn-success" onclick="HandleSearch">Search</button>
+    <label for="page">Page</label>
+    <input style="width:50px;" class="form-control" id="page" value="@After"/>
+
     <table class="table">
         <thead>
             <tr>
                 <th>Doc Id</th>
                 <th>Title</th>
-                <th>Genre</th>
-                <th>ISBN</th>
+                <th>Publisher Name</th>
                 <th>Publishing Date</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var book in Books)
+            @foreach (var book in Documents.Edges)
             {
                 <tr>
-                    <td>@book.Docid</td>
-                    <td>@book.Doc.Title</td>
-                    <td>@book.Genre</td>
-                    <td>@book.Isbn</td>
-                    <td>@book.Doc.Pdate.Date</td>
+                    <td>@book.Node.Docid</td>
+                    <td>@book.Node.Title</td>
+                    <td>@book.Node.Publisher.Pubname</td>
+                    <td>@book.Node.Pdate.Date</td>
                 </tr>
             }
         </tbody>
@@ -42,25 +46,30 @@ else
 }
     
 @code {
-    public Login Credentials { get; set; } = new Login();
+    private string Search { get; set; } = "";
+    private string After { get; set; } = "";
+    private string Before { get; set; } = "";
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    private IReadOnlyList<IBook> Books { get; set; }
+    private IDocsConnection Documents { get; set; }
     protected override async Task OnInitializedAsync()
-    { 
+    {
         var authState = await AuthenticationStateTask;
         var user = authState.User;
 
         if (user.Identity.IsAuthenticated)
-        await GetBooks();
+            await GetBooks();
     }
     private async Task GetBooks()
     {
-            var token = await LocalStorage.GetItemAsync<string>("jwt");
-            TokenStore.SetToken(token);
-            var response = await LibraryClient.GetBooksAsync(1980);
-            if (response.HasErrors)
-                Console.WriteLine(response.Errors.First().Message);
-            else if (response.Data != null) Books = response.Data.Book.Nodes;
+        var response = await LibraryClient.GetDocsAsync(Search, After, Before);
+        if (response.HasErrors)
+            Console.WriteLine(response.Errors.First().Message);
+        else if (response.Data != null) Documents = response.Data.Doc;
+    }
+
+    private async Task HandleSearch(MouseEventArgs e)
+    {
+        await GetBooks();
     }
 }

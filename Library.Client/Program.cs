@@ -3,11 +3,13 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
-using Library.Client.Schema.Generated;
+using Library.Client.Generated;
 using Library.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using StrawberryShake;
+using StrawberryShake.Serializers;
 
 namespace Library.Client
 {

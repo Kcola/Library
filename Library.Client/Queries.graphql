@@ -1,9 +1,14 @@
-query getDocs($first: PaginationAmount, $search:String, $after: String, $before: String){
-    doc(first: $first, where: { title_contains: $search }, after:$after, before:$before) {
+query getDocs($search:String, $after: String, $before: String){
+    doc( first:10, where: { title_contains: $search }, after:$after, before:$before) {
         edges {
             cursor
             node {
+                docid
                 title
+                pdate
+                publisher{
+                    pubname
+                }
             }
         }
         pageInfo {

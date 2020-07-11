@@ -2,6 +2,7 @@ using System.Text;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.AspNetCore.Playground;
+using HotChocolate.Types;
 using Library.Data;
 using Library.Data.Helpers;
 using Library.Server.Graphql;

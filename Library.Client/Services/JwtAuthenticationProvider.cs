@@ -63,7 +63,7 @@ namespace Library.Client.Services
             var identity = new ClaimsIdentity(claims, "jwt");
 
             var user = new ClaimsPrincipal(identity);
-
+            _tokenStore.SetToken(token);
             return new AuthenticationState(user);
         }
         public async Task Login(string username, string password)
