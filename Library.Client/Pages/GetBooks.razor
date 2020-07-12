@@ -1,0 +1,107 @@
+@page "/books"
+@using Library.Client.Services
+@using Blazored.LocalStorage
+@using Library.Client.Generated
+@using Library.Shared
+@using Microsoft.AspNetCore.Authorization
+@inject ILibraryClient LibraryClient
+@inject ITokenStore TokenStore
+@inject ILocalStorageService LocalStorage
+@attribute [Authorize]
+
+<h1>Book</h1> 
+@if (Documents == null)
+{
+    <p><em>Loading...</em></p>
+}    
+else
+{
+    <div style="display:flex;">
+    <input style="width:200px;" class="form-control my-1" id="search" @bind-Value="Search" @bind-Value:event= "oninput" @onkeyup="@HandleKeyup" >
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Doc Id</th>
+                <th>Title</th>
+                <th>Publisher Name</th>
+                <th>Publishing Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Documents.Edges)
+            {
+                <tr>
+                    <td>@book.Node.Docid</td>
+                    <td>@book.Node.Title</td>
+                    <td>@book.Node.Publisher.Pubname</td>
+                    <td>@book.Node.Pdate.Date.ToString("MM-dd-yy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div style="display:flex;">
+    <button class="btn btn-primary mr-1" @onclick="@PrevPage">◄</button>
+    <input readonly style="width:40px;" class="form-control" id="page" @bind-Value="@Page" @bind-Value:event="onkeyup"/>
+    <button class="btn btn-primary ml-1" @onclick="@NextPage">►</button>
+    </div>
+}
+    
+@code {
+    private string Search { get; set; } = "";
+    private string After { get; set; } = "";
+    private int Page { get; set; } = 1;
+    private string Before { get; set; } = "";
+    private Stack<string> Cursors { get; set; } = new Stack<string>();
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    private IDocsConnection Documents { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+            await GetBooks();
+    }
+    private async Task GetBooks()
+    {
+        var response = await LibraryClient.GetDocsAsync(Search, After, Before);
+        if (response.HasErrors)
+            Console.WriteLine(response.Errors.First().Message);
+        else if (response.Data != null) Documents = response.Data.Doc;
+    }
+
+    private async Task HandleKeyup(KeyboardEventArgs e)
+    {
+        Console.WriteLine(Search);
+        if (e.Key == "Enter" || Search == "")
+        {
+            Cursors = new Stack<string>();
+            await GetBooks();
+            After = "";
+            Page = 1;
+            await GetBooks();
+        }
+    }
+    private async Task PrevPage()
+    {
+        if (Page > 1)
+        {
+            Page--;
+            After = Cursors.Pop();
+            await GetBooks();
+        }
+    }
+    private async Task NextPage()
+    {
+        if (Documents.PageInfo.HasNextPage)
+        {
+            Cursors.Push(After);
+            Page++;
+            After = Documents.PageInfo.EndCursor;
+            await GetBooks();
+        }
+    }
+}
