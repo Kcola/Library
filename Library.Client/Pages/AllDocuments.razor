@@ -23,28 +23,31 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Doc Id</th>
                 <th>Title</th>
+                <th>Isbn</th>
                 <th>Publisher Name</th>
                 <th>Publishing Date</th>
+                <th>Available</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var book in Documents.Edges)
             {
                 <tr>
-                    <td>@book.Node.Docid</td>
                     <td>@book.Node.Title</td>
-                    <td>@book.Node.Publisher.Pubname</td>
-                    <td>@book.Node.Pdate.Date.ToString("MM-dd-yy")</td>
+                    <td>@book.Node.Isbn</td>
+                    <td>@book.Node.PName</td>
+                    <td>@book.Node.PDate.ToString("MM-dd-yy")</td>
+                    <td>@(book.Node.Copy.Where(x=>(bool)x.Available).Count()>0)</td>
                 </tr>
             }
         </tbody>
     </table>
     <div style="display:flex;">
     <button class="btn btn-primary mr-1" @onclick="@PrevPage">◄</button>
-    <input readonly style="width:40px;" class="form-control" id="page" @bind-Value="@Page" @bind-Value:event="onkeyup"/>
+    <input readonly style="width:48px;" class="form-control" id="page" @bind-Value="@Page" @bind-Value:event="onkeyup"/>
     <button class="btn btn-primary ml-1" @onclick="@NextPage">►</button>
+    <p class="ml-auto">Number of Entries @Documents.TotalCount</p>
     </div>
 }
     
@@ -56,7 +59,7 @@ else
     private Stack<string> Cursors { get; set; } = new Stack<string>();
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
-    private IDocsConnection Documents { get; set; }
+    private IDocUnionBookConnection Documents { get; set; }
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateTask;

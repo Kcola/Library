@@ -1,21 +1,29 @@
-query getDocs($search:String, $after: String, $before: String){
-    doc( first:10, where: { title_contains: $search }, after:$after, before:$before) {
-        edges {
-            cursor
-            node {
-                docid
-                title
-                pdate
-                publisher{
-                    pubname
-                }
-            }
+query getDocs($search: String, $after: String, $before: String) {
+  doc(
+    first: 10
+    where: { title_contains: $search }
+    after: $after
+    before: $before
+  ) {
+    edges {
+      cursor
+      node {
+        docid
+        title
+        isbn
+        pDate
+        pName
+        copy {
+          available
         }
-        pageInfo {
-            endCursor
-            hasNextPage
-            hasPreviousPage
-            startCursor
-        }
+      }
     }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
 }

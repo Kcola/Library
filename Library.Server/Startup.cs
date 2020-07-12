@@ -2,15 +2,14 @@ using System.Text;
 using HotChocolate;
 using HotChocolate.AspNetCore;
 using HotChocolate.AspNetCore.Playground;
-using HotChocolate.Types;
 using Library.Data;
 using Library.Data.Helpers;
 using Library.Server.Graphql;
 using Library.Server.Helpers;
-using Library.Shared;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -48,7 +47,7 @@ namespace Library.Server
             services.AddControllers();
             services.AddGraphQL(
                 SchemaBuilder.New()
-                .AddQueryType<Query>()
+                .AddQueryType<DbLoggerCategory.Query>()
                 .AddMutationType<Mutation>()
                 .AddAuthorizeDirectiveType()
             );

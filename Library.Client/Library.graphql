@@ -11,7 +11,7 @@ type Query {
   borrowed(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BorrowsSort where: BorrowsFilter): BorrowsConnection
   branch(after: String before: String first: PaginationAmount last: PaginationAmount order_by: BranchSort where: BranchFilter): BranchConnection
   copy(after: String before: String first: PaginationAmount last: PaginationAmount order_by: CopySort where: CopyFilter): CopyConnection
-  doc(after: String before: String first: PaginationAmount last: PaginationAmount order_by: DocsSort where: DocsFilter): DocsConnection
+  doc(after: String before: String first: PaginationAmount last: PaginationAmount order_by: DocUnionBookSort where: DocUnionBookFilter): DocUnionBookConnection
   reserved(after: String before: String first: PaginationAmount last: PaginationAmount order_by: ReservesSort where: ReservesFilter): ReservesConnection
 }
 
@@ -76,18 +76,15 @@ type Copy {
   position: String
 }
 
-type Docs {
-  borrows: [Borrows]
+type DocUnionBook {
+  borrowed: [Borrows]
   copy: [Copy]
   docid: Int!
-  invEditor: [InvEditor]
-  journalIssue: [JournalIssue]
-  pdate: DateTime!
-  publisher: Publisher
-  publisherid: Int!
-  reserves: [Reserves]
+  isbn: String
+  pDate: DateTime!
+  pName: String
+  reserved: [Reserves]
   title: String
-  writes: [Writes]
 }
 
 input BookSort {
@@ -477,15 +474,16 @@ input CopyFilter {
   position_starts_with: String
 }
 
-input DocsSort {
+input DocUnionBookSort {
   docid: SortOperationKind
-  pdate: SortOperationKind
-  publisherid: SortOperationKind
+  isbn: SortOperationKind
+  pDate: SortOperationKind
+  pName: SortOperationKind
   title: SortOperationKind
 }
 
-input DocsFilter {
-  AND: [DocsFilter!]
+input DocUnionBookFilter {
+  AND: [DocUnionBookFilter!]
   docid: Int
   docid_gt: Int
   docid_gte: Int
@@ -498,31 +496,39 @@ input DocsFilter {
   docid_not_in: [Int!]
   docid_not_lt: Int
   docid_not_lte: Int
-  OR: [DocsFilter!]
-  pdate: DateTime
-  pdate_gt: DateTime
-  pdate_gte: DateTime
-  pdate_in: [DateTime!]
-  pdate_lt: DateTime
-  pdate_lte: DateTime
-  pdate_not: DateTime
-  pdate_not_gt: DateTime
-  pdate_not_gte: DateTime
-  pdate_not_in: [DateTime!]
-  pdate_not_lt: DateTime
-  pdate_not_lte: DateTime
-  publisherid: Int
-  publisherid_gt: Int
-  publisherid_gte: Int
-  publisherid_in: [Int!]
-  publisherid_lt: Int
-  publisherid_lte: Int
-  publisherid_not: Int
-  publisherid_not_gt: Int
-  publisherid_not_gte: Int
-  publisherid_not_in: [Int!]
-  publisherid_not_lt: Int
-  publisherid_not_lte: Int
+  isbn: String
+  isbn_contains: String
+  isbn_ends_with: String
+  isbn_in: [String]
+  isbn_not: String
+  isbn_not_contains: String
+  isbn_not_ends_with: String
+  isbn_not_in: [String]
+  isbn_not_starts_with: String
+  isbn_starts_with: String
+  OR: [DocUnionBookFilter!]
+  pDate: DateTime
+  pDate_gt: DateTime
+  pDate_gte: DateTime
+  pDate_in: [DateTime!]
+  pDate_lt: DateTime
+  pDate_lte: DateTime
+  pDate_not: DateTime
+  pDate_not_gt: DateTime
+  pDate_not_gte: DateTime
+  pDate_not_in: [DateTime!]
+  pDate_not_lt: DateTime
+  pDate_not_lte: DateTime
+  pName: String
+  pName_contains: String
+  pName_ends_with: String
+  pName_in: [String]
+  pName_not: String
+  pName_not_contains: String
+  pName_not_ends_with: String
+  pName_not_in: [String]
+  pName_not_starts_with: String
+  pName_starts_with: String
   title: String
   title_contains: String
   title_ends_with: String
@@ -547,11 +553,11 @@ type BookConnection {
 }
 
 "A connection to a list of items."
-type DocsConnection {
+type DocUnionBookConnection {
   "A list of edges."
-  edges: [DocsEdge!]
+  edges: [DocUnionBookEdge!]
   "A flattened list of the nodes."
-  nodes: [Docs]
+  nodes: [DocUnionBook]
   "Information to aid in pagination."
   pageInfo: PageInfo!
   totalCount: Int!
@@ -637,11 +643,11 @@ type CopyEdge {
 }
 
 "An edge in a connection."
-type DocsEdge {
+type DocUnionBookEdge {
   "A cursor for use in pagination."
   cursor: String!
   "The item at the end of the edge."
-  node: Docs
+  node: DocUnionBook
 }
 
 "An edge in a connection."
@@ -676,6 +682,20 @@ input BorrowRequestInput {
   libid: Int!
   position: String
   readerid: Int!
+}
+
+type Docs {
+  borrows: [Borrows]
+  copy: [Copy]
+  docid: Int!
+  invEditor: [InvEditor]
+  journalIssue: [JournalIssue]
+  pdate: DateTime!
+  publisher: Publisher
+  publisherid: Int!
+  reserves: [Reserves]
+  title: String
+  writes: [Writes]
 }
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Library.Data.Models;
 
 namespace Library.Data.Helpers
 {
@@ -6,6 +8,11 @@ namespace Library.Data.Helpers
     {
         public int Docid { get; set; }
         public string Isbn { get; set; }
+        public string Title { get; set; }
         public string PName { get; set; }
         public DateTime PDate { get; set; }
+        public ICollection<Borrows> Borrowed { get; set; }
+        public ICollection<Reserves> Reserved { get; set; }
+        public ICollection<Copy> Copy { get; set; }
     }
+}
