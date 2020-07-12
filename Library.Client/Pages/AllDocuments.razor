@@ -17,7 +17,7 @@
 else
 {
     <div style="display:flex;">
-    <input style="width:200px;" class="form-control my-1" id="search" @bind-Value="Search" @bind-Value:event= "oninput" @onkeyup="@HandleKeyup" >
+        <input style="width:200px;" class="form-control my-1" id="search" @bind-Value="Search" @bind-Value:event= "oninput" @onkeyup="@HandleKeyup" >
     </div>
 
     <table class="table">
@@ -78,7 +78,6 @@ else
 
     private async Task HandleKeyup(KeyboardEventArgs e)
     {
-        Console.WriteLine(Search);
         if (e.Key == "Enter" || Search == "")
         {
             Cursors = new Stack<string>();
