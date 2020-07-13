@@ -4,7 +4,8 @@ project.lock.json
 .DS_Store
 *.pyc
 
-
+#Jetbrains
+.idea
 # User-specific files
 *.suo
 *.user
