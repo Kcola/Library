@@ -1,0 +1,30 @@
+
+@using Library.Client.Generated
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Isbn</th>
+                <th>Publisher Name</th>
+                <th>Publishing Date</th>
+                <th>Available</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Documents.Edges)
+            {
+                <tr>
+                    <td>@book.Node.Title</td>
+                    <td>@book.Node.Isbn</td>
+                    <td>@book.Node.PName</td>
+                    <td>@book.Node.PDate.ToString("MM-dd-yy")</td>
+                    <td>@(book.Node.Copy.Where(x=>(bool)x.Available).Count()>0)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+@code{
+    [Parameter]
+    public IDocUnionBookConnection Documents { get; set; }
+}

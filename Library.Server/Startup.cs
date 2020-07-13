@@ -47,7 +47,7 @@ namespace Library.Server
             services.AddControllers();
             services.AddGraphQL(
                 SchemaBuilder.New()
-                .AddQueryType<DbLoggerCategory.Query>()
+                .AddQueryType<Query>()
                 .AddMutationType<Mutation>()
                 .AddAuthorizeDirectiveType()
             );

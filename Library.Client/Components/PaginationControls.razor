@@ -1,0 +1,28 @@
+
+    <div style="display:flex;">
+    <button class="btn btn-primary mr-1" @onclick="@PrevPage">◄</button>
+    <input readonly style="width:48px;" class="form-control" id="page" @bind-Value="@CurrentPage" @bind-Value:event="onkeyup"/>
+    <button class="btn btn-primary ml-1" @onclick="@NextPage">►</button>
+    <p class="ml-auto">Number of Entries @TotalCount</p>
+    </div>
+    
+@code{
+    [Parameter]
+    public int TotalCount { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PrevPageHandler { get; set; }
+    [Parameter]
+    public EventCallback<int> NextPageHandler { get; set; }
+    [Parameter]
+    public int CurrentPage { get; set; }
+
+    private async Task NextPage()
+    {
+        await NextPageHandler.InvokeAsync(CurrentPage);
+    }
+    private async Task PrevPage()
+    {
+        await PrevPageHandler.InvokeAsync(CurrentPage);
+    }
+}

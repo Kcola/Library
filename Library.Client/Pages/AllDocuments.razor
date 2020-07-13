@@ -2,7 +2,7 @@
 @using Library.Client.Services
 @using Blazored.LocalStorage
 @using Library.Client.Generated
-@using Library.Shared
+@using Library.Client.Components
 @using Microsoft.AspNetCore.Authorization
 @inject ILibraryClient LibraryClient
 @inject ITokenStore TokenStore
@@ -19,44 +19,15 @@ else
     <div style="display:flex;">
         <input style="width:200px;" class="form-control my-1" id="search" @bind-Value="Search" @bind-Value:event= "oninput" @onkeyup="@HandleKeyup" >
     </div>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Isbn</th>
-                <th>Publisher Name</th>
-                <th>Publishing Date</th>
-                <th>Available</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var book in Documents.Edges)
-            {
-                <tr>
-                    <td>@book.Node.Title</td>
-                    <td>@book.Node.Isbn</td>
-                    <td>@book.Node.PName</td>
-                    <td>@book.Node.PDate.ToString("MM-dd-yy")</td>
-                    <td>@(book.Node.Copy.Where(x=>(bool)x.Available).Count()>0)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div style="display:flex;">
-    <button class="btn btn-primary mr-1" @onclick="@PrevPage">◄</button>
-    <input readonly style="width:48px;" class="form-control" id="page" @bind-Value="@Page" @bind-Value:event="onkeyup"/>
-    <button class="btn btn-primary ml-1" @onclick="@NextPage">►</button>
-    <p class="ml-auto">Number of Entries @Documents.TotalCount</p>
-    </div>
+    <AllDocumentsTable Documents="@Documents"/>
+    <PaginationControls NextPageHandler = "@NextPage" PrevPageHandler = "@PrevPage" CurrentPage="@Page" TotalCount="@Documents.TotalCount"/>
 }
     
 @code {
     private string Search { get; set; } = "";
-    private string After { get; set; } = "";
+    private string CurrentCursor { get; set; } = "";
     private int Page { get; set; } = 1;
-    private string Before { get; set; } = "";
-    private Stack<string> Cursors { get; set; } = new Stack<string>();
+    private Stack<string> CursorStack { get; set; } = new Stack<string>();
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
     private IDocUnionBookConnection Documents { get; set; }
@@ -70,20 +41,23 @@ else
     }
     private async Task GetBooks()
     {
-        var response = await LibraryClient.GetDocsAsync(Search, After, Before);
+        var response = await LibraryClient.GetDocsAsync(Search, CurrentCursor);
         if (response.HasErrors)
             Console.WriteLine(response.Errors.First().Message);
         else if (response.Data != null) Documents = response.Data.Doc;
     }
 
+    private void ResetCursor()
+    {
+        CursorStack = new Stack<string>();
+        CurrentCursor = "";
+        Page = 1;
+    }
     private async Task HandleKeyup(KeyboardEventArgs e)
     {
         if (e.Key == "Enter" || Search == "")
         {
-            Cursors = new Stack<string>();
-            await GetBooks();
-            After = "";
-            Page = 1;
+            ResetCursor();
             await GetBooks();
         }
     }
@@ -92,7 +66,7 @@ else
         if (Page > 1)
         {
             Page--;
-            After = Cursors.Pop();
+            CurrentCursor = CursorStack.Pop();
             await GetBooks();
         }
     }
@@ -100,9 +74,9 @@ else
     {
         if (Documents.PageInfo.HasNextPage)
         {
-            Cursors.Push(After);
+            CursorStack.Push(CurrentCursor);
             Page++;
-            After = Documents.PageInfo.EndCursor;
+            CurrentCursor = Documents.PageInfo.EndCursor;
             await GetBooks();
         }
     }

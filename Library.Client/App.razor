@@ -1,8 +1,9 @@
+@using Library.Client.Shared
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <NotAuthorized>
-                <p>Not Authorized</p>
+                <UnauthorizedView/>
             </NotAuthorized>
         </AuthorizeRouteView>
     </Found>

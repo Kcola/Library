@@ -42,7 +42,7 @@
         var authState = await AuthenticationStateTask;
         var user = authState.User;
         if (!user.Identity.IsAuthenticated)
-            Console.WriteLine(user.Identity.Name);
+            await JsRuntime.InvokeAsync<object>("alert", user.Identity.Name);
         else
             NavManager.NavigateTo("/");
     }
