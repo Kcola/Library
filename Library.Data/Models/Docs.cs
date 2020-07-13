@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using HotChocolate.Types;
 
 namespace Library.Data.Models
 {
@@ -24,6 +25,7 @@ namespace Library.Data.Models
 
         public virtual Publisher Publisher { get; set; }
         public virtual ICollection<Borrows> Borrows { get; set; }
+        [UseFiltering]
         public virtual ICollection<Copy> Copy { get; set; }
         public virtual ICollection<InvEditor> InvEditor { get; set; }
         public virtual ICollection<JournalIssue> JournalIssue { get; set; }
