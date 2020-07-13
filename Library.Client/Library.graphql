@@ -78,7 +78,7 @@ type Copy {
 
 type DocUnionBook {
   borrowed: [Borrows]
-  copy: [Copy]
+  copy(where: CopyFilter): [Copy]
   docid: Int!
   isbn: String
   pDate: DateTime!
@@ -686,7 +686,7 @@ input BorrowRequestInput {
 
 type Docs {
   borrows: [Borrows]
-  copy: [Copy]
+  copy(where: CopyFilter): [Copy]
   docid: Int!
   invEditor: [InvEditor]
   journalIssue: [JournalIssue]

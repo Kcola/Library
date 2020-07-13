@@ -13,8 +13,8 @@ query getDocs($search: String, $after: String, $before: String) {
         isbn
         pDate
         pName
-        copy {
-          available
+        copy (where:{available:true}){
+          copyid
         }
       }
     }

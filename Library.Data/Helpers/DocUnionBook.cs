@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HotChocolate.Types;
 using Library.Data.Models;
 
 namespace Library.Data.Helpers
@@ -13,6 +14,7 @@ namespace Library.Data.Helpers
         public DateTime PDate { get; set; }
         public ICollection<Borrows> Borrowed { get; set; }
         public ICollection<Reserves> Reserved { get; set; }
+        [UseFiltering]
         public ICollection<Copy> Copy { get; set; }
     }
 }

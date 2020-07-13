@@ -18,7 +18,7 @@
                     <td>@book.Node.Isbn</td>
                     <td>@book.Node.PName</td>
                     <td>@book.Node.PDate.ToString("MM-dd-yy")</td>
-                    <td>@(book.Node.Copy.Where(x=>(bool)x.Available).Count()>0)</td>
+                    <td>@book.Node.Copy.Count()</td>
                 </tr>
             }
         </tbody>
