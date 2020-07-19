@@ -1,17 +1,22 @@
 ﻿using Library.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Library.Data
 {
     public partial class LibraryContext : DbContext
     {
-        public LibraryContext()
+        private IConfiguration _configuration;
+
+        public LibraryContext(IConfiguration configuration)
         {
+            _configuration = configuration;
         }
 
-        public LibraryContext(DbContextOptions<LibraryContext> options)
+        public LibraryContext(DbContextOptions<LibraryContext> options, IConfiguration configuration)
             : base(options)
         {
+            _configuration = configuration;
         }
 
         public virtual DbSet<Author> Author { get; set; }
@@ -35,8 +40,7 @@ namespace Library.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=tcp:koc3.database.windows.net,1433;Initial Catalog=library;Persist Security Info=False;User ID=koc3;Password=Playstation3;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString("Library"));
             }
         }
 
