@@ -34,4 +34,7 @@
       <Generator>MSBuild:GraphQL_Compile</Generator>
     </GraphQL>
   </ItemGroup>
+	<PropertyGroup>
+		<BerryNamespace>$(RootNamespace).Generated</BerryNamespace>
+	</PropertyGroup>
 </Project>
