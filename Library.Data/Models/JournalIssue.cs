@@ -13,7 +13,7 @@ namespace Library.Data.Models
         public int IssueNo { get; set; }
         public string Scope { get; set; }
 
-        public virtual Docs Doc { get; set; }
+        public virtual Document Doc { get; set; }
         public virtual ICollection<InvEditor> InvEditor { get; set; }
     }
 }

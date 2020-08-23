@@ -1,22 +1,17 @@
 ﻿using Library.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Library.Data
 {
     public partial class LibraryContext : DbContext
     {
-        private IConfiguration _configuration;
-
-        public LibraryContext(IConfiguration configuration)
+        public LibraryContext()
         {
-            _configuration = configuration;
         }
 
-        public LibraryContext(DbContextOptions<LibraryContext> options, IConfiguration configuration)
+        public LibraryContext(DbContextOptions<LibraryContext> options)
             : base(options)
         {
-            _configuration = configuration;
         }
 
         public virtual DbSet<Author> Author { get; set; }
@@ -25,7 +20,8 @@ namespace Library.Data
         public virtual DbSet<Branch> Branch { get; set; }
         public virtual DbSet<ChiefEditor> ChiefEditor { get; set; }
         public virtual DbSet<Copy> Copy { get; set; }
-        public virtual DbSet<Docs> Doc { get; set; }
+        public virtual DbSet<Document> Document { get; set; }
+        public virtual DbSet<Imports> Imports { get; set; }
         public virtual DbSet<InvEditor> InvEditor { get; set; }
         public virtual DbSet<JournalIssue> JournalIssue { get; set; }
         public virtual DbSet<JournalVolume> JournalVolume { get; set; }
@@ -40,7 +36,8 @@ namespace Library.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(_configuration.GetConnectionString("Library"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer("Server=tcp:koc3.database.windows.net,1433;Initial Catalog=library;Persist Security Info=False;User ID=koc3;Password=Playstation3;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -197,7 +194,7 @@ namespace Library.Data
 
                 entity.Property(e => e.Copyid)
                     .HasColumnName("copyid")
-                    .HasMaxLength(6)
+                    .HasMaxLength(30)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Available)
@@ -207,12 +204,6 @@ namespace Library.Data
                 entity.Property(e => e.Docid).HasColumnName("docid");
 
                 entity.Property(e => e.Libid).HasColumnName("libid");
-
-                entity.Property(e => e.Position)
-                    .IsRequired()
-                    .HasColumnName("position")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Doc)
                     .WithMany(p => p.Copy)
@@ -227,7 +218,7 @@ namespace Library.Data
                     .HasConstraintName("FK_libid1");
             });
 
-            modelBuilder.Entity<Docs>(entity =>
+            modelBuilder.Entity<Document>(entity =>
             {
                 entity.HasKey(e => e.Docid)
                     .HasName("PK__document__0638DBFA77839155");
@@ -253,6 +244,58 @@ namespace Library.Data
                     .HasForeignKey(d => d.Publisherid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_pubid");
+            });
+
+            modelBuilder.Entity<Imports>(entity =>
+            {
+                entity.HasKey(e => e.BookId)
+                    .HasName("PK__imports__8BE5A12DEC4D37A7");
+
+                entity.ToTable("imports");
+
+                entity.Property(e => e.BookId)
+                    .HasColumnName("bookID")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Authors)
+                    .IsRequired()
+                    .HasColumnName("authors")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.AverageRating).HasColumnName("average_rating");
+
+                entity.Property(e => e.Isbn).HasColumnName("isbn");
+
+                entity.Property(e => e.Isbn13).HasColumnName("isbn13");
+
+                entity.Property(e => e.LanguageCode)
+                    .IsRequired()
+                    .HasColumnName("language_code")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NumPages).HasColumnName("num_pages");
+
+                entity.Property(e => e.PublicationDate)
+                    .HasColumnName("publication_date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Publisher)
+                    .IsRequired()
+                    .HasColumnName("publisher")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RatingsCount).HasColumnName("ratings_count");
+
+                entity.Property(e => e.TextReviewsCount).HasColumnName("text_reviews_count");
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasColumnName("title")
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<InvEditor>(entity =>
@@ -372,9 +415,8 @@ namespace Library.Data
                 entity.Property(e => e.Publisherid).HasColumnName("publisherid");
 
                 entity.Property(e => e.Address)
-                    .IsRequired()
                     .HasColumnName("address")
-                    .HasMaxLength(255)
+                    .HasMaxLength(100)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Pubname)

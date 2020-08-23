@@ -4,7 +4,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Library.Data.Helpers;
-using Library.Data.Models;
 using Library.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

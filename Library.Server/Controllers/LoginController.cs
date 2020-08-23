@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using HotChocolate.AspNetCore.Authorization;
 using Library.Data.Helpers;
-using Library.Data.Models;
 using Library.Server.Helpers;
 using Library.Shared;
 using Microsoft.AspNetCore.Mvc;

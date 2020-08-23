@@ -6,7 +6,7 @@
         public int IssueNo { get; set; }
         public string Iename { get; set; }
 
-        public virtual Docs Doc { get; set; }
+        public virtual Document Doc { get; set; }
         public virtual JournalIssue IssueNoNavigation { get; set; }
     }
 }

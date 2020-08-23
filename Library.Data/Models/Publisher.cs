@@ -6,7 +6,7 @@ namespace Library.Data.Models
     {
         public Publisher()
         {
-            Document = new HashSet<Docs>();
+            Document = new HashSet<Document>();
         }
 
         public int Publisherid { get; set; }
@@ -14,6 +14,6 @@ namespace Library.Data.Models
         public string Address { get; set; }
         public string Zipcode { get; set; }
 
-        public virtual ICollection<Docs> Document { get; set; }
+        public virtual ICollection<Document> Document { get; set; }
     }
 }

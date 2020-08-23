@@ -6,7 +6,7 @@
         public int Jvolume { get; set; }
         public int EditorId { get; set; }
 
-        public virtual Docs Doc { get; set; }
+        public virtual Document Doc { get; set; }
         public virtual ChiefEditor Editor { get; set; }
     }
 }

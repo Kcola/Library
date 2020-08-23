@@ -8,8 +8,6 @@ using Library.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using StrawberryShake;
-using StrawberryShake.Serializers;
 
 namespace Library.Client
 {
