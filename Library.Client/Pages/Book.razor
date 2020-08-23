@@ -1,6 +1,33 @@
+@using Microsoft.Extensions.Logging
+@using Library.Client.Helpers
+@using Library.Client.Models
 @page "/book"
-
-
+@inject IHttpClientFactory HttpClientFactory
+@inject ILogger<Book> _logger
+@if (BookInfo == null)
+{
+    <p>loading....</p>
+}
+else
+{
+    @foreach (var item in BookInfo.items)
+    {
+        <h6>@item.volumeInfo.title</h6>
+    }
+}
 @code{
-
+    public GoogleBookVolume BookInfo { get; set; }
+    public string Isbn { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        var googleBooks = HttpClientFactory.CreateClient("GoogleBooks");
+        var query = new GoogleBookSearchParams
+        {
+            Params = new List<SearchParam> {
+                new SearchParam {Field = "isbn", Value = "9780439358071"}
+            }
+        };
+        var response = await googleBooks.GetAsync(query.ToString());
+        BookInfo = await response.Content.ReadFromJsonAsync<GoogleBookVolume>();
+    }
 }
