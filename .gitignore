@@ -39,3 +39,4 @@ msbuild.wrn
 /.idea/.idea.Library.Server/riderModule.iml
 /.idea/.idea.Library.Server/.idea/vcs.xml
 /Library.Client/Generated/
+Library.Client/Generated/.hash.md5
