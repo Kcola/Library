@@ -56,7 +56,7 @@ namespace Library.Server.Graphql
         [UseSorting]
         [UseFiltering]
         public IQueryable<DocUnionBook> GetDoc([Service] LibraryContext libraryContext) =>
-               libraryContext.Doc.Join(
+               libraryContext.Docs.Join(
                       libraryContext.Book,
             doc => doc.Docid,
             book => book.Docid,

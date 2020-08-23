@@ -20,7 +20,7 @@ namespace Library.Data
         public virtual DbSet<Branch> Branch { get; set; }
         public virtual DbSet<ChiefEditor> ChiefEditor { get; set; }
         public virtual DbSet<Copy> Copy { get; set; }
-        public virtual DbSet<Document> Document { get; set; }
+        public virtual DbSet<Docs> Docs { get; set; }
         public virtual DbSet<Imports> Imports { get; set; }
         public virtual DbSet<InvEditor> InvEditor { get; set; }
         public virtual DbSet<JournalIssue> JournalIssue { get; set; }
@@ -31,15 +31,6 @@ namespace Library.Data
         public virtual DbSet<Reserves> Reserves { get; set; }
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Writes> Writes { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=tcp:koc3.database.windows.net,1433;Initial Catalog=library;Persist Security Info=False;User ID=koc3;Password=Playstation3;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -218,7 +209,7 @@ namespace Library.Data
                     .HasConstraintName("FK_libid1");
             });
 
-            modelBuilder.Entity<Document>(entity =>
+            modelBuilder.Entity<Docs>(entity =>
             {
                 entity.HasKey(e => e.Docid)
                     .HasName("PK__document__0638DBFA77839155");
