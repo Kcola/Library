@@ -1,4 +1,9 @@
-﻿namespace Library.Client.Generated
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using StrawberryShake;
+
+namespace Library.Client.Generated
 {
     [System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "11.0.0")]
     public partial class DocUnionBook
@@ -7,7 +12,7 @@
         public DocUnionBook(
             int docid, 
             string title, 
-            string isbn, 
+            long isbn, 
             System.DateTimeOffset pDate, 
             string pName, 
             global::System.Collections.Generic.IReadOnlyList<global::Library.Client.Generated.ICopy> copy)
@@ -24,7 +29,7 @@
 
         public string Title { get; }
 
-        public string Isbn { get; }
+        public long Isbn { get; }
 
         public System.DateTimeOffset PDate { get; }
 

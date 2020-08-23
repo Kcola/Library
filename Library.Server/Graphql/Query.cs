@@ -12,7 +12,6 @@ using Library.Data.Helpers;
 namespace Library.Server.Graphql
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    [Authorize]
     public class Query
     {
         [UsePaging]

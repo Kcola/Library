@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text.Json;
 using StrawberryShake;
+using StrawberryShake.Configuration;
 using StrawberryShake.Http;
+using StrawberryShake.Http.Subscriptions;
+using StrawberryShake.Transport;
 
 namespace Library.Client.Generated
 {
@@ -12,6 +17,7 @@ namespace Library.Client.Generated
         private readonly IValueSerializer _intSerializer;
         private readonly IValueSerializer _stringSerializer;
         private readonly IValueSerializer _booleanSerializer;
+        private readonly IValueSerializer _longSerializer;
         private readonly IValueSerializer _dateTimeSerializer;
 
         public GetDocsResultParser(IValueSerializerCollection serializerResolver)
@@ -23,6 +29,7 @@ namespace Library.Client.Generated
             _intSerializer = serializerResolver.Get("Int");
             _stringSerializer = serializerResolver.Get("String");
             _booleanSerializer = serializerResolver.Get("Boolean");
+            _longSerializer = serializerResolver.Get("Long");
             _dateTimeSerializer = serializerResolver.Get("DateTime");
         }
 
@@ -120,7 +127,7 @@ namespace Library.Client.Generated
             (
                 DeserializeInt(obj, "docid"),
                 DeserializeNullableString(obj, "title"),
-                DeserializeNullableString(obj, "isbn"),
+                DeserializeLong(obj, "isbn"),
                 DeserializeDateTime(obj, "pDate"),
                 DeserializeNullableString(obj, "pName"),
                 ParseGetDocsDocEdgesNodeCopy(obj, "copy")
@@ -186,6 +193,12 @@ namespace Library.Client.Generated
             JsonElement value = obj.GetProperty(fieldName);
             return (bool)_booleanSerializer.Deserialize(value.GetBoolean());
         }
+        private long DeserializeLong(JsonElement obj, string fieldName)
+        {
+            JsonElement value = obj.GetProperty(fieldName);
+            return (long)_longSerializer.Deserialize(value.GetInt64());
+        }
+
         private System.DateTimeOffset DeserializeDateTime(JsonElement obj, string fieldName)
         {
             JsonElement value = obj.GetProperty(fieldName);
